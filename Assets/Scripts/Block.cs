@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
+    // Quads
     private GameObject topFace;
     private GameObject bottomFace;
     private GameObject northFace;
     private GameObject eastFace;
     private GameObject southFace;
     private GameObject westFace;
+
+    private GameObject topNeighbor;
+    private GameObject bottomNeighbor;
+    private GameObject northNeighbor;
+    private GameObject southNeighbor;
+    private GameObject eastNeighbor;
+    private GameObject westNeighbor;
 
     public static int blockSize = 1;
 
@@ -60,5 +68,91 @@ public class Block : MonoBehaviour
         southFace.GetComponent<Renderer>().material.mainTexture = tex;
         eastFace.GetComponent<Renderer>().material.mainTexture = tex;
         westFace.GetComponent<Renderer>().material.mainTexture = tex;
+    }
+
+    public void EnableRendering()
+    {
+        if(topNeighbor == null)
+        {
+            topFace.SetActive(true);
+        }
+        if (bottomNeighbor == null)
+        {
+            bottomFace.SetActive(true);
+        }
+        if (northNeighbor == null)
+        {
+            northFace.SetActive(true);
+        }
+        if (southNeighbor == null)
+        {
+            southFace.SetActive(true);
+        }
+        if (eastNeighbor == null)
+        {
+            eastFace.SetActive(true);
+        }
+        if (westNeighbor == null)
+        {
+            westFace.SetActive(true);
+        }
+    }
+    public void DisableRendering()
+    {
+        topFace.SetActive(false);
+        bottomFace.SetActive(false);
+        northFace.SetActive(false);
+        southFace.SetActive(false);
+        eastFace.SetActive(false);
+        westFace.SetActive(false);
+    }
+
+    public void SetTopNeighbor(GameObject neighbor)
+    {
+        topNeighbor = neighbor;
+        if(topNeighbor)
+        {
+            topFace.SetActive(false);
+        }
+    }
+    public void SetBottomNeighbor(GameObject neighbor)
+    {
+        bottomNeighbor = neighbor;
+        if (bottomNeighbor)
+        {
+            bottomFace.SetActive(false);
+        }
+    }
+    public void SetNorthNeighbor(GameObject neighbor)
+    {
+        northNeighbor = neighbor;
+        if (northNeighbor)
+        {
+            northFace.SetActive(false);
+        }
+    }
+    public void SetSouthNeighbor(GameObject neighbor)
+    {
+        southNeighbor = neighbor;
+        if (southNeighbor)
+        {
+            southFace.SetActive(false);
+        }
+    }
+    public void SetEastNeighbor(GameObject neighbor)
+    {
+        eastNeighbor = neighbor;
+        if (eastNeighbor)
+        {
+            eastFace.SetActive(false);
+        }
+    }
+    public void SetWestNeighbor(GameObject neighbor)
+    {
+        westNeighbor = neighbor;
+        if (westNeighbor)
+        {
+            westFace.SetActive(false);
+        }
     }
 }
