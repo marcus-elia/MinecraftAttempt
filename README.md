@@ -5,7 +5,7 @@ Here are my goals.
 - [x] Initialize repository and Unity project
 - [x] Create a Block class with 6 faces
 - [ ] Make a Chunk system that generates a flat surface of blocks and a basic first-person controller
-- [ ] Disable faces of Blocks that are not exposed to air
+- [x] Disable faces of Blocks that are not exposed to air
 - [ ] Highlight the Block that the cursor is touching
 - [ ] Click and hold to break Blocks
 - [ ] Make Blocks droppable and pick-upable.

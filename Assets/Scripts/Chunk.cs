@@ -22,7 +22,7 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int worldHeight = 10;
-    public static int groundLevel = 2;
+    public static int groundLevel = 1;
     private int perlinValue;
 
     // Neighboring chunks
@@ -171,6 +171,34 @@ public class Chunk : MonoBehaviour
                     {
                         blocks[y, x + 1, z].GetComponent<Block>().SetWestNeighbor(blocks[y, x, z]);
                     }
+                }
+            }
+        }
+        // Set the neighbors of the north and east edges
+        for(int y = 0; y < worldHeight; y++)
+        {
+            // East edge
+            for(int z = 0; z < blocksPerSide - 1; z++)
+            {
+                if(blocks[y, blocksPerSide - 1, z] != null)
+                {
+                    blocks[y, blocksPerSide - 1, z].GetComponent<Block>().SetNorthNeighbor(blocks[y, blocksPerSide - 1, z + 1]);
+                }
+                if (blocks[y, blocksPerSide - 1, z + 1] != null)
+                {
+                    blocks[y, blocksPerSide - 1, z + 1].GetComponent<Block>().SetSouthNeighbor(blocks[y, blocksPerSide - 1, z]);
+                }
+            }
+            // North edge
+            for(int x = 0; x < blocksPerSide - 1; x++)
+            {
+                if(blocks[y, x, blocksPerSide - 1] != null)
+                {
+                    blocks[y, x, blocksPerSide - 1].GetComponent<Block>().SetEastNeighbor(blocks[y, x + 1, blocksPerSide - 1]);
+                }
+                if (blocks[y, x + 1, blocksPerSide - 1] != null)
+                {
+                    blocks[y, x + 1, blocksPerSide - 1].GetComponent<Block>().SetWestNeighbor(blocks[y, x, blocksPerSide - 1]);
                 }
             }
         }
