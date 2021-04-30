@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// The transform.position of a Chunk is at the center of 
+// The transform.position of a Chunk is at the SW corner of 
 // the Chunk, with a y value of 0. The bottom of the lowest
 // layer of blocks is at y = 0. So the center of the lowest
 // layer of blocks is at y = 0.5.
@@ -19,12 +19,11 @@ public class Chunk : MonoBehaviour
 {
     // Basic chunk properties
     private int chunkID;
-    private Point2D chunkCoords; // corresponds to north west corner
+    private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int worldHeight = 10;
-    public static int groundLevel = 5;
+    public static int groundLevel = 2;
     private int perlinValue;
-    private Vector3 bottomLeft;
 
     // Neighboring chunks
     private Chunk northNeighbor;
@@ -91,8 +90,7 @@ public class Chunk : MonoBehaviour
     }
     private void CalculatePosition()
     {
-        transform.position = new Vector3((chunkCoords.x + 0.5f) * blocksPerSide, 0, (chunkCoords.z - 0.5f) * blocksPerSide);
-        bottomLeft = new Vector3(chunkCoords.x * blocksPerSide, 0, (chunkCoords.z - 1) * blocksPerSide);
+        transform.position = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
     }
     public void SetTexture(Texture input)
     {
@@ -256,5 +254,23 @@ public class Chunk : MonoBehaviour
     public GameObject[,,] GetBlocks()
     {
         return blocks;
+    }
+    public int CountExposedFaces()
+    {
+        int count = 0;
+        for(int y = 0; y < worldHeight; y++)
+        {
+            for(int x = 0; x < blocksPerSide; x++)
+            {
+                for(int z = 0; z < blocksPerSide; z++)
+                {
+                    if(blocks[y, x, z] != null)
+                    {
+                        count += blocks[y, x, z].GetComponent<Block>().GetNumExposedFaces();
+                    }
+                }
+            }
+        }
+        return count;
     }
 }

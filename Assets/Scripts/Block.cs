@@ -155,4 +155,35 @@ public class Block : MonoBehaviour
             westFace.SetActive(false);
         }
     }
+
+    // Count how many faces are exposed
+    public int GetNumExposedFaces()
+    {
+        int count = 0;
+        if(topNeighbor == null)
+        {
+            count += 1;
+        }
+        if (bottomNeighbor == null)
+        {
+            count += 1;
+        }
+        if (northNeighbor == null)
+        {
+            count += 1;
+        }
+        if (southNeighbor == null)
+        {
+            count += 1;
+        }
+        if (eastNeighbor == null)
+        {
+            count += 1;
+        }
+        if (westNeighbor == null)
+        {
+            count += 1;
+        }
+        return count;
+    }
 }

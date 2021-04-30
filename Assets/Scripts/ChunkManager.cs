@@ -76,6 +76,7 @@ public class ChunkManager : MonoBehaviour
             {
                 currentChunks.Add(allSeenChunks[id]);
                 allSeenChunks[id].GetComponent<Chunk>().EnableChunk();
+                Debug.Log("existing chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
             }
             else
             {
@@ -116,7 +117,7 @@ public class ChunkManager : MonoBehaviour
                 c.GetComponent<Chunk>().EnableChunk();
                 allSeenChunks.Add(id, c);
                 currentChunks.Add(c);
-
+                Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
             }
         }
     }

@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 829e263fc94129146adfbaa279dd7526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderRadius: 2
+  renderRadius: 0
   tex: {fileID: 2800000, guid: a535ff085efc979439ba2e61f0c9e304, type: 3}
   playerTransform: {fileID: 914808278}
 --- !u!1 &705507993
