@@ -38,6 +38,7 @@ public class Block : MonoBehaviour
         topFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         topFace.transform.position = transform.position + blockSize / 2f * Vector3.up;
         topFace.transform.Rotate(Vector3.right, 90f);
+        topFace.layer = 6;
 
         bottomFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         bottomFace.transform.position = transform.position + blockSize / 2f * Vector3.down;

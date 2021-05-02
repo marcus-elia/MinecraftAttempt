@@ -301,4 +301,25 @@ public class Chunk : MonoBehaviour
         }
         return count;
     }
+
+    // Return the index (x, z) of the block that the given position
+    // is on, in the xz-plane
+    public Point2D GetBlockIndex(Vector3 position)
+    {
+        Vector3 localPosition = position - transform.position;
+        return new Point2D(Mathf.FloorToInt(localPosition.x), Mathf.FloorToInt(localPosition.z));
+    }
+    // Calculate what actual ground level is for this Chunk at the given position
+    public float GetGroundLevel(Vector3 position)
+    {
+        Point2D indices = GetBlockIndex(position);
+        int x = indices.x;
+        int z = indices.z;
+        int y = worldHeight - 1;
+        while(blocks[y,x,z] == null)
+        {
+            y--;
+        }
+        return y + 1;
+    }
 }

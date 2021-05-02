@@ -26,6 +26,7 @@ public class ChunkManager : MonoBehaviour
     // Keep track of where the player is to decide which Chunks
     // to be active
     public Transform playerTransform;
+    public float playerHeight;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,11 @@ public class ChunkManager : MonoBehaviour
         allSeenChunks = new Dictionary<int, GameObject>();
         currentChunks = new List<GameObject>();
         updateChunks();
+
+        // Put the player on the ground
+        float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
+        playerTransform.position = playerTransform.position + Vector3.up * (groundLevel + playerHeight / 2f);
+
     }
 
     // Update is called once per frame
