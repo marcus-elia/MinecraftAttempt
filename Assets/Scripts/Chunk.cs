@@ -24,6 +24,7 @@ public class Chunk : MonoBehaviour
     public static int worldHeight = 10;
     public static int groundLevel = 1;
     private int perlinValue;
+    private Vector3 bottomLeft;
 
     // Neighboring chunks
     private Chunk northNeighbor;
@@ -31,8 +32,16 @@ public class Chunk : MonoBehaviour
     private Chunk southNeighbor;
     private Chunk westNeighbor;
 
+    // Is the chunk currently loaded?
+    private bool isActive = true;
+
+    // We keep track of if a block is being looked at
+    private GameObject highlightedBlock = null;
+
     // For now, every block gets this
     private Texture tex;
+    // When looked at by raycast
+    private Texture highlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight, blocksPerSide, blocksPerSide];
 
@@ -63,6 +72,7 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
+        isActive = true;
     }
     public void DisableChunk()
     {
@@ -79,6 +89,7 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
+        isActive = false;
     }
 
     // Setters and Initializers
@@ -91,10 +102,14 @@ public class Chunk : MonoBehaviour
     private void CalculatePosition()
     {
         transform.position = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
+        // Store the bottom left of the chunk in world coordinates
+        bottomLeft = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
+        Debug.Log("bottomLeft set to" + bottomLeft);
     }
-    public void SetTexture(Texture input)
+    public void SetTexture(Texture input, Texture highlightInput)
     {
         tex = input;
+        highlightTex = highlightInput;
     }
 
     public void InitializeBlocks()
@@ -278,10 +293,14 @@ public class Chunk : MonoBehaviour
     }
 
 
-    // Getter
+    // Getters
     public GameObject[,,] GetBlocks()
     {
         return blocks;
+    }
+    public bool GetIsActive()
+    {
+        return isActive;
     }
     public int CountExposedFaces()
     {
@@ -300,6 +319,10 @@ public class Chunk : MonoBehaviour
             }
         }
         return count;
+    }
+    public Vector3 GetBottomLeft()
+    {
+        return bottomLeft;
     }
 
     // Return the index (x, z) of the block that the given position
@@ -322,4 +345,36 @@ public class Chunk : MonoBehaviour
         }
         return y + 1;
     }
+
+    // When the player is looking at a location in this chunk
+    public void ReactToRaycastHit(Transform hit)
+    {
+        Debug.Log("chunk corner is " + bottomLeft);
+        Vector3 localHit = hit.position - bottomLeft;
+        int x = Mathf.FloorToInt(localHit.x);
+        int y = Mathf.FloorToInt(localHit.y);
+        int z = Mathf.FloorToInt(localHit.z);
+        Debug.Log("chunk corner is " + bottomLeft);
+        Debug.Log("local hit is " + localHit);
+        highlightBlock(x, y, z);
+    }
+
+    private void highlightBlock(int x, int y, int z)
+    {
+        if(highlightedBlock)
+        {
+            highlightedBlock.GetComponent<Block>().SetTexture(tex);
+        }
+        highlightedBlock = blocks[y, x, z];
+        highlightedBlock.GetComponent<Block>().SetTexture(highlightTex);
+    }
+    public void unHighlight()
+    {
+        if (highlightedBlock)
+        {
+            highlightedBlock.GetComponent<Block>().SetTexture(tex);
+        }
+        highlightedBlock = null;
+    }
+
 }

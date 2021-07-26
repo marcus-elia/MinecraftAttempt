@@ -21,12 +21,18 @@ public class ChunkManager : MonoBehaviour
     private Dictionary<int, GameObject> allSeenChunks;
     private List<GameObject> currentChunks;
 
+    private int lookedAtChunkID = 0;
+
     public Texture tex;
+    public Texture highlightedTex;
 
     // Keep track of where the player is to decide which Chunks
     // to be active
     public Transform playerTransform;
     public float playerHeight;
+
+    // Need the camera for raycasting
+    public Camera camera;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +56,7 @@ public class ChunkManager : MonoBehaviour
         {
             updateChunks();
         }
+        Raycast();
     }
 
     // If the player enters a new chunk, return true and update the chunk id
@@ -89,7 +96,7 @@ public class ChunkManager : MonoBehaviour
                 GameObject c = new GameObject();
                 c.AddComponent<Chunk>();
                 c.GetComponent<Chunk>().SetChunkID(id);
-                c.GetComponent<Chunk>().SetTexture(tex);
+                c.GetComponent<Chunk>().SetTexture(tex, highlightedTex);
                 c.GetComponent<Chunk>().InitializeBlocks();
 
                 // Set the neighbors, if they exist
@@ -122,7 +129,8 @@ public class ChunkManager : MonoBehaviour
                 c.GetComponent<Chunk>().EnableChunk();
                 allSeenChunks.Add(id, c);
                 currentChunks.Add(c);
-                Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
+                Debug.Log("after done creating, bottomLeft of chunk is " + c.GetComponent<Chunk>().GetBottomLeft());
+                //Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
             }
         }
     }
@@ -293,4 +301,41 @@ public class ChunkManager : MonoBehaviour
         chunkCoords.x -= 1;
         return point2DtoChunkID(chunkCoords);
     }
+    
+    
+    // Raycast stuff for getting the block the player is looking at
+    public void Raycast()
+    {
+        RaycastHit hit;
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            Transform objectHit = hit.transform;
+            int newLookedAtChunkID = ChunkManager.GetIDOfChunkContainingPoint(objectHit);
+            Debug.Log(hit.transform.position);
+            Debug.Log(" is in chunk " + newLookedAtChunkID);
+            if(newLookedAtChunkID != lookedAtChunkID)
+            {
+                allSeenChunks[lookedAtChunkID].GetComponent<Chunk>().unHighlight();
+            }
+
+            if(allSeenChunks.ContainsKey(lookedAtChunkID))
+            {
+                Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
+                if(lookedAtChunk.GetIsActive())
+                {
+                    lookedAtChunk.ReactToRaycastHit(objectHit);
+                }
+            }
+        }
+    }
+    public static int GetIDOfChunkContainingPoint(Transform loc)
+    {
+        int chunkSize = Chunk.blocksPerSide;
+        int x = Mathf.FloorToInt(loc.position.x / chunkSize);
+        int z = Mathf.FloorToInt(loc.position.z / chunkSize);
+        return ChunkManager.chunkCoordsToChunkID(x, z);
+    }
 }
+
