@@ -104,7 +104,6 @@ public class Chunk : MonoBehaviour
         transform.position = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
         // Store the bottom left of the chunk in world coordinates
         bottomLeft = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
-        Debug.Log("bottomLeft set to" + bottomLeft);
     }
     public void SetTexture(Texture input, Texture highlightInput)
     {
@@ -349,13 +348,10 @@ public class Chunk : MonoBehaviour
     // When the player is looking at a location in this chunk
     public void ReactToRaycastHit(Transform hit)
     {
-        Debug.Log("chunk corner is " + bottomLeft);
         Vector3 localHit = hit.position - bottomLeft;
         int x = Mathf.FloorToInt(localHit.x);
-        int y = Mathf.FloorToInt(localHit.y);
+        int y = Mathf.FloorToInt(localHit.y - 0.5f); // Floor of surface is one unit too high
         int z = Mathf.FloorToInt(localHit.z);
-        Debug.Log("chunk corner is " + bottomLeft);
-        Debug.Log("local hit is " + localHit);
         highlightBlock(x, y, z);
     }
 

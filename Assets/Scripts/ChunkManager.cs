@@ -129,7 +129,6 @@ public class ChunkManager : MonoBehaviour
                 c.GetComponent<Chunk>().EnableChunk();
                 allSeenChunks.Add(id, c);
                 currentChunks.Add(c);
-                Debug.Log("after done creating, bottomLeft of chunk is " + c.GetComponent<Chunk>().GetBottomLeft());
                 //Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
             }
         }
@@ -318,10 +317,12 @@ public class ChunkManager : MonoBehaviour
             if(newLookedAtChunkID != lookedAtChunkID)
             {
                 allSeenChunks[lookedAtChunkID].GetComponent<Chunk>().unHighlight();
+                lookedAtChunkID = newLookedAtChunkID;
             }
 
             if(allSeenChunks.ContainsKey(lookedAtChunkID))
             {
+                Debug.Log(allSeenChunks[lookedAtChunkID].GetComponent<Chunk>().GetBottomLeft() + "...");
                 Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
                 if(lookedAtChunk.GetIsActive())
                 {
