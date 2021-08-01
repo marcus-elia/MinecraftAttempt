@@ -385,19 +385,12 @@ public class ChunkManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(1))
         {
-            RaycastHit hit;
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                Transform objectHit = hit.transform;
-                if (allSeenChunks.ContainsKey(lookedAtChunkID))
+           if (allSeenChunks.ContainsKey(lookedAtChunkID))
+           {
+                Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
+                if (lookedAtChunk.GetIsActive())
                 {
-                    Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
-                    if (lookedAtChunk.GetIsActive())
-                    {
-                        lookedAtChunk.ReactToRightClick(hit.transform);
-                    }
+                    lookedAtChunk.ReactToRightClick();
                 }
             }
         }

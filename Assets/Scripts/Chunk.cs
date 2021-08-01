@@ -380,9 +380,22 @@ public class Chunk : MonoBehaviour
     public void ReactToRaycastHit(Transform hit)
     {
         Vector3 localHit = hit.position - bottomLeft;
-        int x = Mathf.FloorToInt(localHit.x);
-        int y = Mathf.FloorToInt(localHit.y - 0.5f); // Floor of surface is one unit too high
-        int z = Mathf.FloorToInt(localHit.z);
+        int x, y, z;
+        // If the face is facing east or north
+        if(hit.localRotation.eulerAngles.y == 180 || hit.localRotation.eulerAngles.y == 270)
+        {
+            x = Mathf.FloorToInt(localHit.x - 0.5f);
+            y = Mathf.FloorToInt(localHit.y - 0.5f); // Floor of surface is one unit too high
+            z = Mathf.FloorToInt(localHit.z - 0.5f);
+        }
+        // West or south facing
+        else
+        {
+            x = Mathf.FloorToInt(localHit.x);
+            y = Mathf.FloorToInt(localHit.y- 0.5f); // Floor of surface is one unit too high
+            z = Mathf.FloorToInt(localHit.z);
+        }
+        
         /*if(localHit.x - x > 0.5)
         {
             x++;
@@ -437,9 +450,7 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    public void ReactToRightClick(Transform hit)
+    public void ReactToRightClick()
     {
-        Vector3 localHit = hit.position - bottomLeft;
-        Debug.Log(localHit);
     }
 }
