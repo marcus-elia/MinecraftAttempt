@@ -115,6 +115,10 @@ public class Block : MonoBehaviour
         {
             topFace.SetActive(false);
         }
+        else
+        {
+            topFace.SetActive(true);
+        }
     }
     public void SetBottomNeighbor(GameObject neighbor)
     {
@@ -122,6 +126,10 @@ public class Block : MonoBehaviour
         if (bottomNeighbor)
         {
             bottomFace.SetActive(false);
+        }
+        else
+        {
+            bottomFace.SetActive(true);
         }
     }
     public void SetNorthNeighbor(GameObject neighbor)
@@ -131,6 +139,10 @@ public class Block : MonoBehaviour
         {
             northFace.SetActive(false);
         }
+        else
+        {
+            northFace.SetActive(true);
+        }
     }
     public void SetSouthNeighbor(GameObject neighbor)
     {
@@ -138,6 +150,10 @@ public class Block : MonoBehaviour
         if (southNeighbor)
         {
             southFace.SetActive(false);
+        }
+        else
+        {
+            southFace.SetActive(true);
         }
     }
     public void SetEastNeighbor(GameObject neighbor)
@@ -147,6 +163,10 @@ public class Block : MonoBehaviour
         {
             eastFace.SetActive(false);
         }
+        else
+        {
+            eastFace.SetActive(true);
+        }
     }
     public void SetWestNeighbor(GameObject neighbor)
     {
@@ -154,6 +174,10 @@ public class Block : MonoBehaviour
         if (westNeighbor)
         {
             westFace.SetActive(false);
+        }
+        else
+        {
+            westFace.SetActive(true);
         }
     }
 
@@ -186,5 +210,52 @@ public class Block : MonoBehaviour
             count += 1;
         }
         return count;
+    }
+
+    public void RemoveSelf()
+    {
+        Debug.Log("broke block located at ");
+        Debug.Log(transform.position);
+        if(topNeighbor)
+        {
+            topNeighbor.GetComponent<Block>().SetBottomNeighbor(null);
+        }
+        if (bottomNeighbor)
+        {
+            bottomNeighbor.GetComponent<Block>().SetTopNeighbor(null);
+        }
+        if (topNeighbor)
+        {
+            topNeighbor.GetComponent<Block>().SetBottomNeighbor(null);
+        }
+        if (northNeighbor)
+        {
+            northNeighbor.GetComponent<Block>().SetSouthNeighbor(null);
+        }
+        if (southNeighbor)
+        {
+            southNeighbor.GetComponent<Block>().SetNorthNeighbor(null);
+        }
+        if (eastNeighbor)
+        {
+            eastNeighbor.GetComponent<Block>().SetWestNeighbor(null);
+        }
+        if (westNeighbor)
+        {
+            westNeighbor.GetComponent<Block>().SetEastNeighbor(null);
+        }
+        this.DisableRendering();
+        /*Destroy(topFace.GetComponent<Collider>());
+        Destroy(bottomFace.GetComponent<Collider>());
+        Destroy(northFace.GetComponent<Collider>());
+        Destroy(southFace.GetComponent<Collider>());
+        Destroy(eastFace.GetComponent<Collider>());
+        Destroy(westFace.GetComponent<Collider>());*/
+        Destroy(topFace);
+        Destroy(bottomFace);
+        Destroy(northFace);
+        Destroy(southFace);
+        Destroy(eastFace);
+        Destroy(westFace);
     }
 }

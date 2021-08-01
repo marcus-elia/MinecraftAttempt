@@ -37,6 +37,7 @@ public class Chunk : MonoBehaviour
 
     // We keep track of if a block is being looked at
     private GameObject highlightedBlock = null;
+    private Point3D highlightedIndex;
 
     // For now, every block gets this
     private Texture tex;
@@ -44,6 +45,12 @@ public class Chunk : MonoBehaviour
     private Texture highlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight, blocksPerSide, blocksPerSide];
+
+    private GameObject chunkBorderPrefab;
+    private GameObject northChunkBorder;
+    private GameObject southChunkBorder;
+    private GameObject eastChunkBorder;
+    private GameObject westChunkBorder;
 
     // Start is called before the first frame update
     void Start()
@@ -291,6 +298,30 @@ public class Chunk : MonoBehaviour
         }
     }
 
+    public void CreateChunkBorders(GameObject inputBorderPrefab)
+    {
+        chunkBorderPrefab = inputBorderPrefab;
+        northChunkBorder = Instantiate(chunkBorderPrefab);
+        northChunkBorder.transform.SetParent(transform);
+        northChunkBorder.transform.localScale = new Vector3(blocksPerSide, blocksPerSide, 1);
+        northChunkBorder.transform.localPosition = new Vector3(blocksPerSide / 2, blocksPerSide / 2, blocksPerSide);
+        southChunkBorder = Instantiate(chunkBorderPrefab);
+        southChunkBorder.transform.SetParent(transform);
+        southChunkBorder.transform.localScale = new Vector3(blocksPerSide, blocksPerSide, 1);
+        southChunkBorder.transform.localPosition = new Vector3(blocksPerSide / 2, blocksPerSide / 2, 0);
+        southChunkBorder.transform.Rotate(Vector3.up, 180f);
+        eastChunkBorder = Instantiate(chunkBorderPrefab);
+        eastChunkBorder.transform.SetParent(transform);
+        eastChunkBorder.transform.localScale = new Vector3(blocksPerSide, blocksPerSide, 1);
+        eastChunkBorder.transform.localPosition = new Vector3(blocksPerSide, blocksPerSide / 2, blocksPerSide/2);
+        eastChunkBorder.transform.Rotate(Vector3.up, 90f);
+        westChunkBorder = Instantiate(chunkBorderPrefab);
+        westChunkBorder.transform.SetParent(transform);
+        westChunkBorder.transform.localScale = new Vector3(blocksPerSide, blocksPerSide, 1);
+        westChunkBorder.transform.localPosition = new Vector3(0, blocksPerSide / 2, blocksPerSide/2);
+        westChunkBorder.transform.Rotate(Vector3.up, 270f);
+    }
+
 
     // Getters
     public GameObject[,,] GetBlocks()
@@ -352,17 +383,38 @@ public class Chunk : MonoBehaviour
         int x = Mathf.FloorToInt(localHit.x);
         int y = Mathf.FloorToInt(localHit.y - 0.5f); // Floor of surface is one unit too high
         int z = Mathf.FloorToInt(localHit.z);
-        highlightBlock(x, y, z);
+        /*if(localHit.x - x > 0.5)
+        {
+            x++;
+        }
+        if(localHit.z - z > 0.5)
+        {
+            z++;
+        }*/
+
+        int result = highlightBlock(x, y, z);
+        if(result == 1)
+        {
+            Debug.Log(hit.position);
+            Debug.Log(hit.localPosition);
+        }
     }
 
-    private void highlightBlock(int x, int y, int z)
+    private int highlightBlock(int x, int y, int z)
     {
         if(highlightedBlock)
         {
             highlightedBlock.GetComponent<Block>().SetTexture(tex);
         }
         highlightedBlock = blocks[y, x, z];
+        highlightedIndex = new Point3D(x, y, z);
+        if(highlightedBlock == null)
+        {
+            Debug.Log("there is no block at " + x + " " + y + " " + z);
+            return 1;
+        }
         highlightedBlock.GetComponent<Block>().SetTexture(highlightTex);
+        return 0;
     }
     public void unHighlight()
     {
@@ -373,4 +425,21 @@ public class Chunk : MonoBehaviour
         highlightedBlock = null;
     }
 
+    public void ReactToClick()
+    {
+        if (highlightedBlock)
+        {
+            highlightedBlock.GetComponent<Block>().RemoveSelf();
+            blocks[highlightedIndex.y, highlightedIndex.x, highlightedIndex.z] = null;
+            Destroy(highlightedBlock.GetComponent<Collider>());
+            Destroy(highlightedBlock);
+            highlightedBlock = null;
+        }
+    }
+
+    public void ReactToRightClick(Transform hit)
+    {
+        Vector3 localHit = hit.position - bottomLeft;
+        Debug.Log(localHit);
+    }
 }

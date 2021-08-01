@@ -258,6 +258,7 @@ MonoBehaviour:
   renderRadius: 2
   tex: {fileID: 2800000, guid: a535ff085efc979439ba2e61f0c9e304, type: 3}
   highlightedTex: {fileID: 2800000, guid: 312061b87b7496745804c87042c363d1, type: 3}
+  chunkBorderPrefab: {fileID: 7563736160133425841, guid: 4d8857467294df442a591acb00fbfbd5, type: 3}
   playerTransform: {fileID: 914808278}
   playerHeight: 1
   camera: {fileID: 963194227}
@@ -523,7 +524,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1

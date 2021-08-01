@@ -14,6 +14,20 @@ public struct Point2D
     }
 }
 
+public struct Point3D
+{
+    public int x;
+    public int y;
+    public int z;
+
+    public Point3D(int x, int y, int z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+}
+
 public class ChunkManager : MonoBehaviour
 {
     private int currentPlayerChunkID;
@@ -25,6 +39,8 @@ public class ChunkManager : MonoBehaviour
 
     public Texture tex;
     public Texture highlightedTex;
+
+    public GameObject chunkBorderPrefab;
 
     // Keep track of where the player is to decide which Chunks
     // to be active
@@ -57,6 +73,8 @@ public class ChunkManager : MonoBehaviour
             updateChunks();
         }
         Raycast();
+        ReactToClick();
+        ReactToRightClick();
     }
 
     // If the player enters a new chunk, return true and update the chunk id
@@ -98,6 +116,7 @@ public class ChunkManager : MonoBehaviour
                 c.GetComponent<Chunk>().SetChunkID(id);
                 c.GetComponent<Chunk>().SetTexture(tex, highlightedTex);
                 c.GetComponent<Chunk>().InitializeBlocks();
+                c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 
                 // Set the neighbors, if they exist
                 // (and the set reverse neighbor direction)
@@ -312,8 +331,6 @@ public class ChunkManager : MonoBehaviour
         {
             Transform objectHit = hit.transform;
             int newLookedAtChunkID = ChunkManager.GetIDOfChunkContainingPoint(objectHit);
-            Debug.Log(hit.transform.position);
-            Debug.Log(" is in chunk " + newLookedAtChunkID);
             if(newLookedAtChunkID != lookedAtChunkID)
             {
                 allSeenChunks[lookedAtChunkID].GetComponent<Chunk>().unHighlight();
@@ -322,11 +339,21 @@ public class ChunkManager : MonoBehaviour
 
             if(allSeenChunks.ContainsKey(lookedAtChunkID))
             {
-                Debug.Log(allSeenChunks[lookedAtChunkID].GetComponent<Chunk>().GetBottomLeft() + "...");
                 Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
                 if(lookedAtChunk.GetIsActive())
                 {
                     lookedAtChunk.ReactToRaycastHit(objectHit);
+                }
+            }
+        }
+        else
+        {
+            if (allSeenChunks.ContainsKey(lookedAtChunkID))
+            {
+                Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
+                if (lookedAtChunk.GetIsActive())
+                {
+                    lookedAtChunk.unHighlight();
                 }
             }
         }
@@ -337,6 +364,43 @@ public class ChunkManager : MonoBehaviour
         int x = Mathf.FloorToInt(loc.position.x / chunkSize);
         int z = Mathf.FloorToInt(loc.position.z / chunkSize);
         return ChunkManager.chunkCoordsToChunkID(x, z);
+    }
+
+    public void ReactToClick()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            if(allSeenChunks.ContainsKey(lookedAtChunkID))
+            {
+                Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
+                if (lookedAtChunk.GetIsActive())
+                {
+                    lookedAtChunk.ReactToClick();
+                }
+            }
+        }
+    }
+
+    public void ReactToRightClick()
+    {
+        if(Input.GetMouseButtonDown(1))
+        {
+            RaycastHit hit;
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Transform objectHit = hit.transform;
+                if (allSeenChunks.ContainsKey(lookedAtChunkID))
+                {
+                    Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
+                    if (lookedAtChunk.GetIsActive())
+                    {
+                        lookedAtChunk.ReactToRightClick(hit.transform);
+                    }
+                }
+            }
+        }
     }
 }
 
