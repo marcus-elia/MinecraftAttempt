@@ -132,6 +132,8 @@ public class Chunk : MonoBehaviour
                     block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
                     block.GetComponent<Block>().CreateFaces();
                     block.GetComponent<Block>().SetTexture(tex);
+                    block.GetComponent<Block>().SetChunkID(chunkID);
+                    block.GetComponent<Block>().SetIndexInChunk(x, y, z);
                     blocks[y, x, z] = block;
                 }
             }

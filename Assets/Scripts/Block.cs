@@ -11,13 +11,18 @@ public class Block : MonoBehaviour
     private GameObject eastFace;
     private GameObject southFace;
     private GameObject westFace;
-
+    
+    // 6 neighboring  blocks
     private GameObject topNeighbor;
     private GameObject bottomNeighbor;
     private GameObject northNeighbor;
     private GameObject southNeighbor;
     private GameObject eastNeighbor;
     private GameObject westNeighbor;
+
+    // Info for the chunk
+    private int chunkID;
+    private Point3D indexInChunk;
 
     public static int blockSize = 1;
 
@@ -69,6 +74,16 @@ public class Block : MonoBehaviour
         southFace.GetComponent<Renderer>().material.mainTexture = tex;
         eastFace.GetComponent<Renderer>().material.mainTexture = tex;
         westFace.GetComponent<Renderer>().material.mainTexture = tex;
+    }
+
+    public void SetChunkID(int inputChunkID)
+    {
+        chunkID = inputChunkID;
+    }
+
+    public void SetIndexInChunk(int x, int y, int z)
+    {
+        indexInChunk = new Point3D(x, y, z);
     }
 
     public void EnableRendering()
@@ -212,6 +227,15 @@ public class Block : MonoBehaviour
         return count;
     }
 
+    public int GetChunkID()
+    {
+        return chunkID;
+    }
+    public Point3D GetIndexInChunk()
+    {
+        return indexInChunk;
+    }
+
     public void RemoveSelf()
     {
         Debug.Log("broke block located at ");
@@ -245,12 +269,6 @@ public class Block : MonoBehaviour
             westNeighbor.GetComponent<Block>().SetEastNeighbor(null);
         }
         this.DisableRendering();
-        /*Destroy(topFace.GetComponent<Collider>());
-        Destroy(bottomFace.GetComponent<Collider>());
-        Destroy(northFace.GetComponent<Collider>());
-        Destroy(southFace.GetComponent<Collider>());
-        Destroy(eastFace.GetComponent<Collider>());
-        Destroy(westFace.GetComponent<Collider>());*/
         Destroy(topFace);
         Destroy(bottomFace);
         Destroy(northFace);
