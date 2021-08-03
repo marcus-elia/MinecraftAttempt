@@ -342,7 +342,7 @@ public class ChunkManager : MonoBehaviour
                 Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
                 if(lookedAtChunk.GetIsActive())
                 {
-                    lookedAtChunk.ReactToRaycastHit(objectHit);
+                    lookedAtChunkID = lookedAtChunk.ReactToRaycastHit(objectHit);
                 }
             }
         }

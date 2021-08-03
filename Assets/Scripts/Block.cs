@@ -262,8 +262,6 @@ public class Block : MonoBehaviour
 
     public void RemoveSelf()
     {
-        Debug.Log("broke block located at ");
-        Debug.Log(transform.position);
         if(topNeighbor)
         {
             topNeighbor.GetComponent<Block>().SetBottomNeighbor(null);

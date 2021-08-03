@@ -233,6 +233,7 @@ public class Chunk : MonoBehaviour
     public void SetNorthNeighbor(Chunk neighbor)
     {
         northNeighbor = neighbor;
+        northNeighbor.SetSouthNeighborChunkOnly(this);
 
         // Give the blocks their neighbors
         int z = blocksPerSide - 1;
@@ -251,6 +252,7 @@ public class Chunk : MonoBehaviour
     public void SetSouthNeighbor(Chunk neighbor)
     {
         southNeighbor = neighbor;
+        southNeighbor.SetNorthNeighborChunkOnly(this);
 
         // Give the blocks their neighbors
         int z = 0;
@@ -269,6 +271,7 @@ public class Chunk : MonoBehaviour
     public void SetEastNeighbor(Chunk neighbor)
     {
         eastNeighbor = neighbor;
+        eastNeighbor.SetWestNeighborChunkOnly(this);
 
         // Give the blocks their neighbors
         int x = blocksPerSide - 1;
@@ -287,6 +290,7 @@ public class Chunk : MonoBehaviour
     public void SetWestNeighbor(Chunk neighbor)
     {
         westNeighbor = neighbor;
+        westNeighbor.SetEastNeighborChunkOnly(this);
 
         // Give the blocks their neighbors
         int x = 0;
@@ -301,6 +305,23 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetNorthNeighborChunkOnly(Chunk input)
+    {
+        northNeighbor = input;
+    }
+    public void SetSouthNeighborChunkOnly(Chunk input)
+    {
+        southNeighbor = input;
+    }
+    public void SetEastNeighborChunkOnly(Chunk input)
+    {
+        eastNeighbor = input;
+    }
+    public void SetWestNeighborChunkOnly(Chunk input)
+    {
+        westNeighbor = input;
     }
 
     public void CreateChunkBorders(GameObject inputBorderPrefab)
@@ -386,7 +407,9 @@ public class Chunk : MonoBehaviour
     }
 
     // When the player is looking at a location in this chunk
-    public void ReactToRaycastHit(Transform hit)
+    // It could be that the hit is on the Chunk border and should be
+    // in a neighboring Chunk. This returns the ID of the true Chunk
+    public int ReactToRaycastHit(Transform hit)
     {
         Vector3 localHit = hit.position - bottomLeft;
         int x, y, z;
@@ -400,7 +423,7 @@ public class Chunk : MonoBehaviour
             this.blockHighlightSide = Direction.Up;
         }
         // Bottom face
-        else if(hit.localRotation.eulerAngles.x == -90)
+        else if(hit.localRotation.eulerAngles.x == 270)
         {
             x = Mathf.FloorToInt(localHit.x);
             y = Mathf.FloorToInt(localHit.y);
@@ -410,6 +433,10 @@ public class Chunk : MonoBehaviour
         // North face
         else if(hit.localRotation.eulerAngles.y == 180)
         {
+            if(localHit.z == 0) // Check if it should be neighbor chunk
+            {
+                return southNeighbor.ReactToRaycastHit(hit);
+            }
             x = Mathf.FloorToInt(localHit.x - 0.5f);
             y = Mathf.FloorToInt(localHit.y);
             z = Mathf.FloorToInt(localHit.z - 0.5f);
@@ -418,6 +445,10 @@ public class Chunk : MonoBehaviour
         // East face
         else if(hit.localRotation.eulerAngles.y == 270)
         {
+            if (localHit.x == 0) // Check if it should be neighbor chunk
+            {
+                return eastNeighbor.ReactToRaycastHit(hit);
+            }
             x = Mathf.FloorToInt(localHit.x - 0.5f);
             y = Mathf.FloorToInt(localHit.y);
             z = Mathf.FloorToInt(localHit.z - 0.5f);
@@ -426,6 +457,10 @@ public class Chunk : MonoBehaviour
         // West face
         else if(hit.localRotation.eulerAngles.y == 90)
         {
+            if (localHit.x == blocksPerSide) // Check if it should be neighbor chunk
+            {
+                return westNeighbor.ReactToRaycastHit(hit);
+            }
             x = Mathf.FloorToInt(localHit.x);
             y = Mathf.FloorToInt(localHit.y);
             z = Mathf.FloorToInt(localHit.z);
@@ -434,6 +469,10 @@ public class Chunk : MonoBehaviour
         // South face
         else
         {
+            if (localHit.z == blocksPerSide) // Check if it should be neighbor chunk
+            {
+                return northNeighbor.ReactToRaycastHit(hit);
+            }
             x = Mathf.FloorToInt(localHit.x);
             y = Mathf.FloorToInt(localHit.y);
             z = Mathf.FloorToInt(localHit.z);
@@ -441,6 +480,7 @@ public class Chunk : MonoBehaviour
         }
         
         highlightBlock(x, y, z);
+        return this.chunkID;
     }
 
     private int highlightBlock(int x, int y, int z)
