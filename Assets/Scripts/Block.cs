@@ -235,6 +235,30 @@ public class Block : MonoBehaviour
     {
         return indexInChunk;
     }
+    public GameObject GetTopNeighbor()
+    {
+        return topNeighbor;
+    }
+    public GameObject GetBottomNeighbor()
+    {
+        return bottomNeighbor;
+    }
+    public GameObject GetNorthNeighbor()
+    {
+        return northNeighbor;
+    }
+    public GameObject GetSouthNeighbor()
+    {
+        return southNeighbor;
+    }
+    public GameObject GetEastNeighbor()
+    {
+        return eastNeighbor;
+    }
+    public GameObject GetWestNeighbor()
+    {
+        return westNeighbor;
+    }
 
     public void RemoveSelf()
     {

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Direction { Up, Down, North, South, East, West};
+
 // The transform.position of a Chunk is at the SW corner of 
 // the Chunk, with a y value of 0. The bottom of the lowest
 // layer of blocks is at y = 0. So the center of the lowest
@@ -38,6 +40,7 @@ public class Chunk : MonoBehaviour
     // We keep track of if a block is being looked at
     private GameObject highlightedBlock = null;
     private Point3D highlightedIndex;
+    private Direction blockHighlightSide;
 
     // For now, every block gets this
     private Texture tex;
@@ -334,6 +337,10 @@ public class Chunk : MonoBehaviour
     {
         return isActive;
     }
+    public bool HasBlockAt(int x, int y, int z)
+    {
+        return (blocks[y, x, z] != null);
+    }
     public int CountExposedFaces()
     {
         int count = 0;
@@ -383,36 +390,57 @@ public class Chunk : MonoBehaviour
     {
         Vector3 localHit = hit.position - bottomLeft;
         int x, y, z;
-        // If the face is facing east or north
-        if(hit.localRotation.eulerAngles.y == 180 || hit.localRotation.eulerAngles.y == 270)
+
+        // If the face is the top face
+        if (hit.localRotation.eulerAngles.x == 90)
+        {
+            x = Mathf.FloorToInt(localHit.x);
+            y = Mathf.FloorToInt(localHit.y - 0.5f);
+            z = Mathf.FloorToInt(localHit.z);
+            this.blockHighlightSide = Direction.Up;
+        }
+        // Bottom face
+        else if(hit.localRotation.eulerAngles.x == -90)
+        {
+            x = Mathf.FloorToInt(localHit.x);
+            y = Mathf.FloorToInt(localHit.y);
+            z = Mathf.FloorToInt(localHit.z);
+            this.blockHighlightSide = Direction.Down;
+        }
+        // North face
+        else if(hit.localRotation.eulerAngles.y == 180)
         {
             x = Mathf.FloorToInt(localHit.x - 0.5f);
-            y = Mathf.FloorToInt(localHit.y - 0.5f); // Floor of surface is one unit too high
+            y = Mathf.FloorToInt(localHit.y);
             z = Mathf.FloorToInt(localHit.z - 0.5f);
+            this.blockHighlightSide = Direction.North;
         }
-        // West or south facing
+        // East face
+        else if(hit.localRotation.eulerAngles.y == 270)
+        {
+            x = Mathf.FloorToInt(localHit.x - 0.5f);
+            y = Mathf.FloorToInt(localHit.y);
+            z = Mathf.FloorToInt(localHit.z - 0.5f);
+            this.blockHighlightSide = Direction.East;
+        }
+        // West face
+        else if(hit.localRotation.eulerAngles.y == 90)
+        {
+            x = Mathf.FloorToInt(localHit.x);
+            y = Mathf.FloorToInt(localHit.y);
+            z = Mathf.FloorToInt(localHit.z);
+            this.blockHighlightSide = Direction.West;
+        }
+        // South face
         else
         {
             x = Mathf.FloorToInt(localHit.x);
-            y = Mathf.FloorToInt(localHit.y- 0.5f); // Floor of surface is one unit too high
+            y = Mathf.FloorToInt(localHit.y);
             z = Mathf.FloorToInt(localHit.z);
+            this.blockHighlightSide = Direction.South;
         }
         
-        /*if(localHit.x - x > 0.5)
-        {
-            x++;
-        }
-        if(localHit.z - z > 0.5)
-        {
-            z++;
-        }*/
-
-        int result = highlightBlock(x, y, z);
-        if(result == 1)
-        {
-            Debug.Log(hit.position);
-            Debug.Log(hit.localPosition);
-        }
+        highlightBlock(x, y, z);
     }
 
     private int highlightBlock(int x, int y, int z)
@@ -454,5 +482,227 @@ public class Chunk : MonoBehaviour
 
     public void ReactToRightClick()
     {
+        if (highlightedBlock != null && this.CanPlace())
+        {
+            int x = highlightedIndex.x;
+            int y = highlightedIndex.y;
+            int z = highlightedIndex.z;
+            if(this.blockHighlightSide == Direction.Up)
+            {
+                PlaceBlock(x, y + 1, z);
+                SetBlockNeighborConnections(x, y + 1, z);
+            }
+            else if(this.blockHighlightSide == Direction.Down)
+            {
+                PlaceBlock(x, y - 1, z);
+                SetBlockNeighborConnections(x, y - 1, z);
+            }
+            else if(this.blockHighlightSide == Direction.North)
+            {
+                // If the block is being placed in the neighbor chunk
+                if(z == blocksPerSide - 1)
+                {
+                    northNeighbor.PlaceBlock(x, y, 0);
+                    northNeighbor.SetBlockNeighborConnections(x, y, 0);
+                }
+                else
+                {
+                    PlaceBlock(x, y, z + 1);
+                    SetBlockNeighborConnections(x, y, z + 1);
+                }
+            }
+            else if(this.blockHighlightSide == Direction.South)
+            {
+                // If the block is being placed in the neighbor chunk
+                if (z == 0)
+                {
+                    southNeighbor.PlaceBlock(x, y, blocksPerSide - 1);
+                    southNeighbor.SetBlockNeighborConnections(x, y, blocksPerSide - 1);
+                }
+                else
+                {
+                    PlaceBlock(x, y, z - 1);
+                    SetBlockNeighborConnections(x, y, z - 1);
+                }
+            }
+            else if(this.blockHighlightSide == Direction.East)
+            {
+                // If the block is being placed in the neighbor chunk
+                if (x == blocksPerSide - 1)
+                {
+                    eastNeighbor.PlaceBlock(0, y, z);
+                    eastNeighbor.SetBlockNeighborConnections(0, y, z);
+                }
+                else
+                {
+                    PlaceBlock(x + 1, y, z);
+                    SetBlockNeighborConnections(x + 1, y, z);
+                }
+            }
+            else if (this.blockHighlightSide == Direction.West)
+            {
+                // If the block is being placed in the neighbor chunk
+                if (x == 0)
+                {
+                    westNeighbor.PlaceBlock(blocksPerSide - 1, y, z);
+                    westNeighbor.SetBlockNeighborConnections(blocksPerSide - 1, y, z);
+                }
+                else
+                {
+                    PlaceBlock(x - 1, y, z);
+                    SetBlockNeighborConnections(x - 1, y, z);
+                }
+            }
+            else
+            {
+                Debug.LogError("highlightedBlock != null but blockHighlightSide = null");
+            }
+        }
+    }
+
+    public void PlaceBlock(int x, int y, int z)
+    {
+        GameObject block = new GameObject();
+        block.AddComponent<Block>();
+        block.transform.SetParent(transform);
+        block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
+        block.GetComponent<Block>().CreateFaces();
+        block.GetComponent<Block>().SetTexture(tex);
+        block.GetComponent<Block>().SetChunkID(chunkID);
+        block.GetComponent<Block>().SetIndexInChunk(x, y, z);
+        blocks[y, x, z] = block;
+    }
+
+    // This assumes the x y z block has been created, but doesn't have neighbors set
+    public void SetBlockNeighborConnections(int x, int y, int z)
+    {
+        GameObject neighbor;
+        // West
+        if(x == 0)
+        {
+            neighbor = this.westNeighbor.GetBlocks()[y, blocksPerSide - 1, z];
+        }
+        else
+        {
+            neighbor = blocks[y, x - 1, z];
+        }
+        if(neighbor != null)
+        {
+            neighbor.GetComponent<Block>().SetEastNeighbor(blocks[y, x, z]);
+            blocks[y, x, z].GetComponent<Block>().SetWestNeighbor(neighbor);
+        }
+        // East
+        if(x == blocksPerSide - 1)
+        {
+            neighbor = this.eastNeighbor.GetBlocks()[y, 0, z];
+        }
+        else
+        {
+            neighbor = blocks[y, x + 1, z];
+        }
+        if(neighbor != null)
+        {
+            neighbor.GetComponent<Block>().SetWestNeighbor(blocks[y, x, z]);
+            blocks[y, x, z].GetComponent<Block>().SetEastNeighbor(neighbor);
+        }
+        // North
+        if (z ==  blocksPerSide - 1)
+        {
+            neighbor = this.northNeighbor.GetBlocks()[y, x, 0];
+        }
+        else
+        {
+            neighbor = blocks[y, x, z + 1];
+        }
+        if(neighbor != null)
+        {
+            neighbor.GetComponent<Block>().SetSouthNeighbor(blocks[y, x, z]);
+            blocks[y, x, z].GetComponent<Block>().SetNorthNeighbor(neighbor);
+        }
+        // South
+        if (z == 0)
+        {
+            neighbor = this.southNeighbor.GetBlocks()[y, x, blocksPerSide - 1];
+        }
+        else
+        {
+            neighbor = blocks[y, x, z - 1];
+        }
+        if(neighbor != null)
+        {
+            neighbor.GetComponent<Block>().SetNorthNeighbor(blocks[y, x, z]);
+            blocks[y, x, z].GetComponent<Block>().SetSouthNeighbor(neighbor);
+        }
+        // Top
+        if (y != worldHeight)
+        {
+            neighbor = blocks[y + 1, x, z];
+            if(neighbor != null)
+            {
+                neighbor.GetComponent<Block>().SetBottomNeighbor(blocks[y, x, z]);
+                blocks[y, x, z].GetComponent<Block>().SetTopNeighbor(neighbor);
+            }
+        }
+        // Bottom
+        if (y != 0)
+        {
+            neighbor = blocks[y - 1, x, z];
+            if(neighbor != null)
+            {
+                neighbor.GetComponent<Block>().SetTopNeighbor(blocks[y, x, z]);
+                blocks[y, x, z].GetComponent<Block>().SetBottomNeighbor(neighbor);
+            }
+        }
+    }
+
+    // Checks if a block can be placed when the player is currently highlighting
+    // Returns true if the target space is empty and within the y-limits of the game
+    private bool CanPlace()
+    {
+        int y = highlightedIndex.y;
+        Block b = highlightedBlock.GetComponent<Block>();
+        if(this.blockHighlightSide == Direction.Up)
+        {
+            if(b.GetTopNeighbor() == null)
+            {
+                return (y != worldHeight);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if(this.blockHighlightSide == Direction.Down)
+        {
+            if(b.GetBottomNeighbor() == null)
+            {
+                return (y != 0);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if(this.blockHighlightSide == Direction.North)
+        {
+            return (b.GetNorthNeighbor() == null);
+        }
+        else if(this.blockHighlightSide == Direction.South)
+        {
+            return (b.GetSouthNeighbor() == null);
+        }
+        else if(this.blockHighlightSide == Direction.East)
+        {
+            return (b.GetEastNeighbor() == null);
+        }
+        else if(this.blockHighlightSide == Direction.West)
+        {
+            return (b.GetWestNeighbor() == null);
+        }
+        else
+        {
+            Debug.Log("there is not a highlighted block");
+            return false;
+        }
     }
 }
