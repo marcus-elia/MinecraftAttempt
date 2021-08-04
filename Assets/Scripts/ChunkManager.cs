@@ -138,7 +138,7 @@ public class ChunkManager : MonoBehaviour
                     c.GetComponent<Chunk>().SetEastNeighbor(allSeenChunks[eastID].GetComponent<Chunk>());
                     allSeenChunks[eastID].GetComponent<Chunk>().SetWestNeighbor(c.GetComponent<Chunk>());
                 }
-                int westID = GetEastChunkID(id);
+                int westID = GetWestChunkID(id);
                 if (allSeenChunks.ContainsKey(westID))
                 {
                     c.GetComponent<Chunk>().SetWestNeighbor(allSeenChunks[westID].GetComponent<Chunk>());

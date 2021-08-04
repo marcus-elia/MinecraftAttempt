@@ -405,6 +405,10 @@ public class Chunk : MonoBehaviour
         }
         return y + 1;
     }
+    public int GetChunkID()
+    {
+        return chunkID;
+    }
 
     // When the player is looking at a location in this chunk
     // It could be that the hit is on the Chunk border and should be
