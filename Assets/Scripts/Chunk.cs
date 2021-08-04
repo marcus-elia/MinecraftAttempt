@@ -451,7 +451,7 @@ public class Chunk : MonoBehaviour
         {
             if (localHit.x == 0) // Check if it should be neighbor chunk
             {
-                return eastNeighbor.ReactToRaycastHit(hit);
+                return westNeighbor.ReactToRaycastHit(hit);
             }
             x = Mathf.FloorToInt(localHit.x - 0.5f);
             y = Mathf.FloorToInt(localHit.y);
@@ -463,7 +463,7 @@ public class Chunk : MonoBehaviour
         {
             if (localHit.x == blocksPerSide) // Check if it should be neighbor chunk
             {
-                return westNeighbor.ReactToRaycastHit(hit);
+                return eastNeighbor.ReactToRaycastHit(hit);
             }
             x = Mathf.FloorToInt(localHit.x);
             y = Mathf.FloorToInt(localHit.y);
