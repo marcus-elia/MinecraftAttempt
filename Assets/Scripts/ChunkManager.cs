@@ -62,7 +62,6 @@ public class ChunkManager : MonoBehaviour
         // Put the player on the ground
         float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
         playerTransform.position = playerTransform.position + Vector3.up * (groundLevel + playerHeight / 2f);
-
     }
 
     // Update is called once per frame
@@ -389,8 +388,8 @@ public class ChunkManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(1))
         {
-           if (allSeenChunks.ContainsKey(lookedAtChunkID))
-           {
+            if (allSeenChunks.ContainsKey(lookedAtChunkID))
+            {
                 Chunk lookedAtChunk = allSeenChunks[lookedAtChunkID].GetComponent<Chunk>();
                 if (lookedAtChunk.GetIsActive())
                 {

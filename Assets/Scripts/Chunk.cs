@@ -55,6 +55,9 @@ public class Chunk : MonoBehaviour
     private GameObject eastChunkBorder;
     private GameObject westChunkBorder;
 
+    // The size of a block for checking collisions
+    private static Vector3 blockHalfExtents = new Vector3(0.4f, 0.4f, 0.4f);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -410,6 +413,14 @@ public class Chunk : MonoBehaviour
         return chunkID;
     }
 
+    public Vector3 BlockIndexToWorldCoordinates(Point3D blockCoords)
+    {
+        float x = bottomLeft.x + blockCoords.x + 0.5f;
+        float y = blockCoords.y + 0.5f;
+        float z = bottomLeft.z + blockCoords.z + 0.5f;
+        return new Vector3(x, y, z);
+    }
+
     // When the player is looking at a location in this chunk
     // It could be that the hit is on the Chunk border and should be
     // in a neighboring Chunk. This returns the ID of the true Chunk
@@ -701,52 +712,70 @@ public class Chunk : MonoBehaviour
 
     // Checks if a block can be placed when the player is currently highlighting
     // Returns true if the target space is empty and within the y-limits of the game
+    // and the block will not overlap with the player
     private bool CanPlace()
     {
+        Point3D targetIndex;  // Where we want to place a block
+
+        // First, check if the space has a block in it
         int y = highlightedIndex.y;
         Block b = highlightedBlock.GetComponent<Block>();
         if(this.blockHighlightSide == Direction.Up)
         {
-            if(b.GetTopNeighbor() == null)
-            {
-                return (y != worldHeight);
-            }
-            else
+            if(b.GetTopNeighbor() != null || y == worldHeight)
             {
                 return false;
             }
+            targetIndex = new Point3D(highlightedIndex.x, y + 1, highlightedIndex.z);
         }
         else if(this.blockHighlightSide == Direction.Down)
         {
-            if(b.GetBottomNeighbor() == null)
-            {
-                return (y != 0);
-            }
-            else
+            if(b.GetBottomNeighbor() != null || y == 0)
             {
                 return false;
             }
+            targetIndex = new Point3D(highlightedIndex.x, y - 1, highlightedIndex.z);
         }
         else if(this.blockHighlightSide == Direction.North)
         {
-            return (b.GetNorthNeighbor() == null);
+            if(b.GetNorthNeighbor() != null)
+            {
+                return false;
+            }
+            targetIndex = new Point3D(highlightedIndex.x, y, highlightedIndex.z + 1);
         }
         else if(this.blockHighlightSide == Direction.South)
         {
-            return (b.GetSouthNeighbor() == null);
+            if (b.GetSouthNeighbor() != null)
+            {
+                return false;
+            }
+            targetIndex = new Point3D(highlightedIndex.x, y, highlightedIndex.z - 1);
         }
         else if(this.blockHighlightSide == Direction.East)
         {
-            return (b.GetEastNeighbor() == null);
+            if (b.GetEastNeighbor() != null)
+            {
+                return false;
+            }
+            targetIndex = new Point3D(highlightedIndex.x + 1, y, highlightedIndex.z);
         }
         else if(this.blockHighlightSide == Direction.West)
         {
-            return (b.GetWestNeighbor() == null);
+            if (b.GetWestNeighbor() != null)
+            {
+                return false;
+            }
+            targetIndex = new Point3D(highlightedIndex.x - 1, y, highlightedIndex.z);
         }
         else
         {
             Debug.Log("there is not a highlighted block");
             return false;
         }
+
+        // Then, check if it overlaps with the player
+        Vector3 blockCenter = this.BlockIndexToWorldCoordinates(targetIndex);
+        return !Physics.CheckBox(blockCenter, blockHalfExtents, Quaternion.identity);
     }
 }
