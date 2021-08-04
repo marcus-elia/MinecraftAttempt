@@ -47,7 +47,7 @@ public class Chunk : MonoBehaviour
     // When looked at by raycast
     private Texture highlightTex;
 
-    private GameObject[,,] blocks = new GameObject[worldHeight, blocksPerSide, blocksPerSide];
+    private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
 
     private GameObject chunkBorderPrefab;
     private GameObject northChunkBorder;
