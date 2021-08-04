@@ -43,27 +43,32 @@ public class Block : MonoBehaviour
         topFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         topFace.transform.position = transform.position + blockSize / 2f * Vector3.up;
         topFace.transform.Rotate(Vector3.right, 90f);
-        topFace.layer = 6;
+        topFace.layer = LayerMask.NameToLayer("Ground");
 
         bottomFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         bottomFace.transform.position = transform.position + blockSize / 2f * Vector3.down;
         bottomFace.transform.Rotate(Vector3.right, -90f);
+        bottomFace.layer = LayerMask.NameToLayer("Block Faces");
 
         northFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         northFace.transform.position = transform.position + blockSize / 2f * Vector3.forward;
         northFace.transform.Rotate(Vector3.up, 180f);
+        northFace.layer = LayerMask.NameToLayer("Block Faces");
 
         southFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         southFace.transform.position = transform.position + blockSize / 2f * Vector3.back;
+        southFace.layer = LayerMask.NameToLayer("Block Faces");
         // Don't need to rotate this one
 
         eastFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         eastFace.transform.position = transform.position + blockSize / 2f * Vector3.right;
         eastFace.transform.Rotate(Vector3.up, -90f);
+        eastFace.layer = LayerMask.NameToLayer("Block Faces");
 
         westFace = GameObject.CreatePrimitive(PrimitiveType.Quad);
         westFace.transform.position = transform.position + blockSize / 2f * Vector3.left;
         westFace.transform.Rotate(Vector3.up, 90f);
+        westFace.layer = LayerMask.NameToLayer("Block Faces");
     }
 
     public void SetTexture(Texture tex)

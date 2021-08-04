@@ -49,6 +49,7 @@ public class ChunkManager : MonoBehaviour
 
     // Need the camera for raycasting
     public Camera camera;
+    public float raycastDistance = 7f;
 
     // Start is called before the first frame update
     void Start()
@@ -326,8 +327,11 @@ public class ChunkManager : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        string[] collidableLayers = { "Block Faces", "Ground" };
 
-        if (Physics.Raycast(ray, out hit))
+        LayerMask mask = LayerMask.GetMask(collidableLayers);
+
+        if (Physics.Raycast(ray, out hit, raycastDistance, mask))
         {
             Transform objectHit = hit.transform;
             int newLookedAtChunkID = ChunkManager.GetIDOfChunkContainingPoint(objectHit);
