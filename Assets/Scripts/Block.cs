@@ -26,6 +26,11 @@ public class Block : MonoBehaviour
 
     public static int blockSize = 1;
 
+    private Texture tex;
+    private Texture highlightTex;
+
+    private bool canBeBroken;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -71,7 +76,12 @@ public class Block : MonoBehaviour
         westFace.layer = LayerMask.NameToLayer("Block Faces");
     }
 
-    public void SetTexture(Texture tex)
+    public void SetTextures(Texture tex, Texture highlightTex)
+    {
+        this.tex = tex;
+        this.highlightTex = highlightTex;
+    }
+    public void ApplyTexture(Texture tex)
     {
         topFace.GetComponent<Renderer>().material.mainTexture = tex;
         bottomFace.GetComponent<Renderer>().material.mainTexture = tex;
@@ -79,6 +89,14 @@ public class Block : MonoBehaviour
         southFace.GetComponent<Renderer>().material.mainTexture = tex;
         eastFace.GetComponent<Renderer>().material.mainTexture = tex;
         westFace.GetComponent<Renderer>().material.mainTexture = tex;
+    }
+    public void ApplyMainTexture()
+    {
+        ApplyTexture(this.tex);
+    }
+    public void ApplyHighlightTexture()
+    {
+        ApplyTexture(this.highlightTex);
     }
 
     public void SetChunkID(int inputChunkID)
@@ -200,6 +218,10 @@ public class Block : MonoBehaviour
             westFace.SetActive(true);
         }
     }
+    public void SetCanBeBroken(bool input)
+    {
+        canBeBroken = input;
+    }
 
     // Count how many faces are exposed
     public int GetNumExposedFaces()
@@ -263,6 +285,11 @@ public class Block : MonoBehaviour
     public GameObject GetWestNeighbor()
     {
         return westNeighbor;
+    }
+
+    public bool CanBeBroken()
+    {
+        return canBeBroken;
     }
 
     public void RemoveSelf()

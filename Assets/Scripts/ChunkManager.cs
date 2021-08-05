@@ -37,8 +37,10 @@ public class ChunkManager : MonoBehaviour
 
     private int lookedAtChunkID = 0;
 
-    public Texture tex;
-    public Texture highlightedTex;
+    public Texture grassTex;
+    public Texture grassHighlightTex;
+    public Texture stoneTex;
+    public Texture stoneHighlightTex;
 
     public GameObject chunkBorderPrefab;
 
@@ -114,7 +116,8 @@ public class ChunkManager : MonoBehaviour
                 GameObject c = new GameObject();
                 c.AddComponent<Chunk>();
                 c.GetComponent<Chunk>().SetChunkID(id);
-                c.GetComponent<Chunk>().SetTexture(tex, highlightedTex);
+                c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
+                c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
                 c.GetComponent<Chunk>().InitializeBlocks();
                 c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 

@@ -7,10 +7,11 @@ Here are my goals.
 - [x] Make a Chunk system that generates a flat surface of blocks and a basic first-person controller
 - [x] Disable faces of Blocks that are not exposed to air
 - [ ] Reduce lag when changing chunks
-- [ ] Highlight the Block that the cursor is touching
-- [ ] Click and hold to break Blocks
+- [x] Highlight the Block that the cursor is touching
+- [x] Click to break Blocks
 - [ ] Make Blocks droppable and pick-upable.
-- [ ] Right click to place blocks
+- [x] Right click to place blocks
+- [x] Add unbreakable block layer at the bottom
 - [ ] Simple terrain
 - [ ] Add basic hostile mobs
 - [ ] Spawning algorithm for mobs

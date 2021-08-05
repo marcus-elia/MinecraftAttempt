@@ -42,10 +42,11 @@ public class Chunk : MonoBehaviour
     private Point3D highlightedIndex;
     private Direction blockHighlightSide;
 
-    // For now, every block gets this
-    private Texture tex;
-    // When looked at by raycast
-    private Texture highlightTex;
+    // Textures
+    private Texture grassTex;
+    private Texture grassHighlightTex;
+    private Texture stoneTex;
+    private Texture stoneHighlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
 
@@ -118,15 +119,40 @@ public class Chunk : MonoBehaviour
         // Store the bottom left of the chunk in world coordinates
         bottomLeft = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
     }
-    public void SetTexture(Texture input, Texture highlightInput)
+    public void SetGrassTextures(Texture input, Texture highlightInput)
     {
-        tex = input;
-        highlightTex = highlightInput;
+        grassTex = input;
+        grassHighlightTex = highlightInput;
+    }
+    public void SetStoneTextures(Texture input, Texture highlightInput)
+    {
+        stoneTex = input;
+        stoneHighlightTex = highlightInput;
     }
 
     public void InitializeBlocks()
     {
-        for(int y = 0; y <= groundLevel; y++)
+        // The unbreakable layer at the bottom
+        for(int x = 0; x < blocksPerSide; x++)
+        {
+            for(int z = 0; z < blocksPerSide; z++)
+            {
+                GameObject block = new GameObject();
+                block.AddComponent<Block>();
+                block.transform.SetParent(transform);
+                block.transform.localPosition = new Vector3(x + 0.5f, 0.5f, z + 0.5f);
+                block.GetComponent<Block>().CreateFaces();
+                block.GetComponent<Block>().SetTextures(stoneTex, stoneHighlightTex);
+                block.GetComponent<Block>().ApplyMainTexture();
+                block.GetComponent<Block>().SetCanBeBroken(false);
+                block.GetComponent<Block>().SetChunkID(chunkID);
+                block.GetComponent<Block>().SetIndexInChunk(x, 0, z);
+                blocks[0, x, z] = block;
+            }
+        }
+
+        // Create everything above the bottom
+        for(int y = 1; y <= groundLevel; y++)
         {
             for(int x = 0; x < blocksPerSide; x++)
             {
@@ -137,7 +163,9 @@ public class Chunk : MonoBehaviour
                     block.transform.SetParent(transform);
                     block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
                     block.GetComponent<Block>().CreateFaces();
-                    block.GetComponent<Block>().SetTexture(tex);
+                    block.GetComponent<Block>().SetTextures(grassTex, grassHighlightTex);
+                    block.GetComponent<Block>().ApplyMainTexture();
+                    block.GetComponent<Block>().SetCanBeBroken(true);
                     block.GetComponent<Block>().SetChunkID(chunkID);
                     block.GetComponent<Block>().SetIndexInChunk(x, y, z);
                     blocks[y, x, z] = block;
@@ -502,7 +530,7 @@ public class Chunk : MonoBehaviour
     {
         if(highlightedBlock)
         {
-            highlightedBlock.GetComponent<Block>().SetTexture(tex);
+            highlightedBlock.GetComponent<Block>().ApplyMainTexture();
         }
         highlightedBlock = blocks[y, x, z];
         highlightedIndex = new Point3D(x, y, z);
@@ -511,21 +539,21 @@ public class Chunk : MonoBehaviour
             Debug.Log("there is no block at " + x + " " + y + " " + z);
             return 1;
         }
-        highlightedBlock.GetComponent<Block>().SetTexture(highlightTex);
+        highlightedBlock.GetComponent<Block>().ApplyHighlightTexture();
         return 0;
     }
     public void unHighlight()
     {
         if (highlightedBlock)
         {
-            highlightedBlock.GetComponent<Block>().SetTexture(tex);
+            highlightedBlock.GetComponent<Block>().ApplyMainTexture();
         }
         highlightedBlock = null;
     }
 
     public void ReactToClick()
     {
-        if (highlightedBlock)
+        if (highlightedBlock && highlightedBlock.GetComponent<Block>().CanBeBroken())
         {
             highlightedBlock.GetComponent<Block>().RemoveSelf();
             blocks[highlightedIndex.y, highlightedIndex.x, highlightedIndex.z] = null;
@@ -622,7 +650,7 @@ public class Chunk : MonoBehaviour
         block.transform.SetParent(transform);
         block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
         block.GetComponent<Block>().CreateFaces();
-        block.GetComponent<Block>().SetTexture(tex);
+        block.GetComponent<Block>().SetTextures(grassTex, grassHighlightTex);
         block.GetComponent<Block>().SetChunkID(chunkID);
         block.GetComponent<Block>().SetIndexInChunk(x, y, z);
         blocks[y, x, z] = block;
