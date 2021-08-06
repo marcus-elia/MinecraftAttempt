@@ -53,9 +53,22 @@ public class ChunkManager : MonoBehaviour
     public Camera camera;
     public float raycastDistance = 7f;
 
+    // Perlin noise parameters for terrain height
+    public int mapWidth = Chunk.blocksPerSide;
+    public int mapHeight = Chunk.blocksPerSide;
+    public int seed;
+    public float scale = 2f;
+    public int octaves = 8;
+    public float persistence = 1f;
+    public float lacunarity = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
+        // Initiate Perlin noise
+        seed = Mathf.FloorToInt(Random.Range(0, int.MaxValue));
+
+        // Initiate chunks
         currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, Chunk.blocksPerSide);
         allSeenChunks = new Dictionary<int, GameObject>();
         currentChunks = new List<GameObject>();
@@ -116,6 +129,10 @@ public class ChunkManager : MonoBehaviour
                 GameObject c = new GameObject();
                 c.AddComponent<Chunk>();
                 c.GetComponent<Chunk>().SetChunkID(id);
+                Vector2 offset = c.GetComponent<Chunk>().GetTerrainOffset();
+                c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
+                                                            scale, octaves, persistence, lacunarity, offset, 
+                                                            Noise.NormalizeMode.Global));
                 c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
                 c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
                 c.GetComponent<Chunk>().InitializeBlocks();

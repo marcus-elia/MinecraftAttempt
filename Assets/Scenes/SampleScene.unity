@@ -265,6 +265,13 @@ MonoBehaviour:
   playerHeight: 1
   camera: {fileID: 963194227}
   raycastDistance: 7
+  mapWidth: 16
+  mapHeight: 16
+  seed: 0
+  scale: 50
+  octaves: 8
+  persistence: 5
+  lacunarity: 1.2
 --- !u!1 &654550254
 GameObject:
   m_ObjectHideFlags: 0

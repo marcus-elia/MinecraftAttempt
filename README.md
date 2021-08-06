@@ -12,7 +12,7 @@ Here are my goals.
 - [ ] Make Blocks droppable and pick-upable.
 - [x] Right click to place blocks
 - [x] Add unbreakable block layer at the bottom
-- [ ] Simple terrain
+- [x] Simple terrain
 - [ ] Add basic hostile mobs
 - [ ] Spawning algorithm for mobs
 - [ ] Left click to attack mobs

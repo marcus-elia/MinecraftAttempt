@@ -24,7 +24,7 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int worldHeight = 10;
-    public static int groundLevel = 1;
+    //public static int groundLevel = 1;
     private int perlinValue;
     private Vector3 bottomLeft;
 
@@ -36,6 +36,9 @@ public class Chunk : MonoBehaviour
 
     // Is the chunk currently loaded?
     private bool isActive = true;
+
+    // The terrain height
+    private float[,] terrainHeights;
 
     // We keep track of if a block is being looked at
     private GameObject highlightedBlock = null;
@@ -129,6 +132,10 @@ public class Chunk : MonoBehaviour
         stoneTex = input;
         stoneHighlightTex = highlightInput;
     }
+    public void SetTerrainHeights(float[,] input)
+    {
+        terrainHeights = input;
+    }
 
     public void InitializeBlocks()
     {
@@ -152,11 +159,14 @@ public class Chunk : MonoBehaviour
         }
 
         // Create everything above the bottom
-        for(int y = 1; y <= groundLevel; y++)
+        for(int x = 0; x < blocksPerSide; x++)
         {
-            for(int x = 0; x < blocksPerSide; x++)
+            for(int z = 0; z < blocksPerSide; z++)
             {
-                for(int z = 0; z < blocksPerSide; z++)
+                // Get the terrain height at this spot in the chunk
+                // No idea why 15 - z is necessary instead of just z, but that's what makes it work
+                int groundLevel = Mathf.Min(worldHeight, Mathf.FloorToInt(1.5f*worldHeight*this.terrainHeights[x, 15 - z]) + 1);
+                for (int y = 1; y <= groundLevel; y++)
                 {
                     GameObject block = new GameObject();
                     block.AddComponent<Block>();
@@ -414,6 +424,10 @@ public class Chunk : MonoBehaviour
     public Vector3 GetBottomLeft()
     {
         return bottomLeft;
+    }
+    public Vector2 GetTerrainOffset()
+    {
+        return new Vector2(bottomLeft.x, bottomLeft.z);
     }
 
     // Return the index (x, z) of the block that the given position
