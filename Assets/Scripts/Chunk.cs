@@ -668,6 +668,7 @@ public class Chunk : MonoBehaviour
         block.GetComponent<Block>().SetChunkID(chunkID);
         block.GetComponent<Block>().SetCanBeBroken(true);
         block.GetComponent<Block>().SetIndexInChunk(x, y, z);
+        block.GetComponent<Block>().ApplyMainTexture();
         blocks[y, x, z] = block;
     }
 
