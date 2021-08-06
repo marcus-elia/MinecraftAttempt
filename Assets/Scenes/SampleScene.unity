@@ -261,6 +261,7 @@ MonoBehaviour:
   stoneTex: {fileID: 2800000, guid: 3c26a749d6812074e88a41fb5e076240, type: 3}
   stoneHighlightTex: {fileID: 2800000, guid: d6c9ca99b6689724da1fe97a983c0925, type: 3}
   chunkBorderPrefab: {fileID: 7563736160133425841, guid: 4d8857467294df442a591acb00fbfbd5, type: 3}
+  worldBorderPrefab: {fileID: 4079126268282017019, guid: 317fc2ddfe7bdcd42b1388aee976a3cc, type: 3}
   playerTransform: {fileID: 914808278}
   playerHeight: 1
   camera: {fileID: 963194227}

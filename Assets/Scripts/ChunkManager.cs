@@ -43,6 +43,7 @@ public class ChunkManager : MonoBehaviour
     public Texture stoneHighlightTex;
 
     public GameObject chunkBorderPrefab;
+    public GameObject worldBorderPrefab;
 
     // Keep track of where the player is to decide which Chunks
     // to be active
@@ -72,6 +73,8 @@ public class ChunkManager : MonoBehaviour
         currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, Chunk.blocksPerSide);
         allSeenChunks = new Dictionary<int, GameObject>();
         currentChunks = new List<GameObject>();
+        // Create 20x20 square of chunks first. Do the work up front to save time.
+        GenerateSquareOfChunks(6);
         updateChunks();
 
         // Put the player on the ground
@@ -125,50 +128,7 @@ public class ChunkManager : MonoBehaviour
             }
             else
             {
-                // Make the new Chunk
-                GameObject c = new GameObject();
-                c.AddComponent<Chunk>();
-                c.GetComponent<Chunk>().SetChunkID(id);
-                Vector2 offset = c.GetComponent<Chunk>().GetTerrainOffset();
-                c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
-                                                            scale, octaves, persistence, lacunarity, offset, 
-                                                            Noise.NormalizeMode.Global));
-                c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
-                c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
-                c.GetComponent<Chunk>().InitializeBlocks();
-                c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
-
-                // Set the neighbors, if they exist
-                // (and the set reverse neighbor direction)
-                int northID = GetNorthChunkID(id);
-                if (allSeenChunks.ContainsKey(northID))
-                {
-                    c.GetComponent<Chunk>().SetNorthNeighbor(allSeenChunks[northID].GetComponent<Chunk>());
-                    allSeenChunks[northID].GetComponent<Chunk>().SetSouthNeighbor(c.GetComponent<Chunk>());
-                }
-                int southID = GetSouthChunkID(id);
-                if (allSeenChunks.ContainsKey(southID))
-                {
-                    c.GetComponent<Chunk>().SetSouthNeighbor(allSeenChunks[southID].GetComponent<Chunk>());
-                    allSeenChunks[southID].GetComponent<Chunk>().SetNorthNeighbor(c.GetComponent<Chunk>());
-                }
-                int eastID = GetEastChunkID(id);
-                if (allSeenChunks.ContainsKey(eastID))
-                {
-                    c.GetComponent<Chunk>().SetEastNeighbor(allSeenChunks[eastID].GetComponent<Chunk>());
-                    allSeenChunks[eastID].GetComponent<Chunk>().SetWestNeighbor(c.GetComponent<Chunk>());
-                }
-                int westID = GetWestChunkID(id);
-                if (allSeenChunks.ContainsKey(westID))
-                {
-                    c.GetComponent<Chunk>().SetWestNeighbor(allSeenChunks[westID].GetComponent<Chunk>());
-                    allSeenChunks[westID].GetComponent<Chunk>().SetEastNeighbor(c.GetComponent<Chunk>());
-                }
-
-                c.GetComponent<Chunk>().EnableChunk();
-                allSeenChunks.Add(id, c);
-                currentChunks.Add(c);
-                //Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
+                //CreateChunk(id);
             }
         }
     }
@@ -177,6 +137,82 @@ public class ChunkManager : MonoBehaviour
     {
         this.renderRadius = newRadius;
         this.updateChunks();
+    }
+
+    public GameObject CreateChunk(int id)
+    {
+        GameObject c = new GameObject();
+        c.AddComponent<Chunk>();
+        c.GetComponent<Chunk>().SetChunkID(id);
+        Vector2 offset = c.GetComponent<Chunk>().GetTerrainOffset();
+        c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
+                                                    scale, octaves, persistence, lacunarity, offset,
+                                                    Noise.NormalizeMode.Global));
+        c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
+        c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
+        c.GetComponent<Chunk>().InitializeBlocks();
+        //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
+
+        // Set the neighbors, if they exist
+        // (and the set reverse neighbor direction)
+        int northID = GetNorthChunkID(id);
+        if (allSeenChunks.ContainsKey(northID))
+        {
+            c.GetComponent<Chunk>().SetNorthNeighbor(allSeenChunks[northID].GetComponent<Chunk>());
+            allSeenChunks[northID].GetComponent<Chunk>().SetSouthNeighbor(c.GetComponent<Chunk>());
+        }
+        int southID = GetSouthChunkID(id);
+        if (allSeenChunks.ContainsKey(southID))
+        {
+            c.GetComponent<Chunk>().SetSouthNeighbor(allSeenChunks[southID].GetComponent<Chunk>());
+            allSeenChunks[southID].GetComponent<Chunk>().SetNorthNeighbor(c.GetComponent<Chunk>());
+        }
+        int eastID = GetEastChunkID(id);
+        if (allSeenChunks.ContainsKey(eastID))
+        {
+            c.GetComponent<Chunk>().SetEastNeighbor(allSeenChunks[eastID].GetComponent<Chunk>());
+            allSeenChunks[eastID].GetComponent<Chunk>().SetWestNeighbor(c.GetComponent<Chunk>());
+        }
+        int westID = GetWestChunkID(id);
+        if (allSeenChunks.ContainsKey(westID))
+        {
+            c.GetComponent<Chunk>().SetWestNeighbor(allSeenChunks[westID].GetComponent<Chunk>());
+            allSeenChunks[westID].GetComponent<Chunk>().SetEastNeighbor(c.GetComponent<Chunk>());
+        }
+
+        c.GetComponent<Chunk>().EnableChunk();
+        allSeenChunks.Add(id, c);
+        currentChunks.Add(c);
+        return c;
+        //Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
+    }
+
+    public void GenerateSquareOfChunks(int squareSize)
+    {
+        for(int i = -squareSize/2; i <= squareSize/2; i++)
+        {
+            for (int j = -squareSize / 2; j <= squareSize / 2; j++)
+            {
+                int id = ChunkManager.chunkCoordsToChunkID(i, j);
+                GameObject c = CreateChunk(id);
+                if(i == -squareSize/2)
+                {
+                    c.GetComponent<Chunk>().AddWorldBorderWest(worldBorderPrefab);
+                }
+                else if(i == squareSize / 2)
+                {
+                    c.GetComponent<Chunk>().AddWorldBorderEast(worldBorderPrefab);
+                }
+                if (j == -squareSize / 2)
+                {
+                    c.GetComponent<Chunk>().AddWorldBorderSouth(worldBorderPrefab);
+                }
+                else if (j == squareSize / 2)
+                {
+                    c.GetComponent<Chunk>().AddWorldBorderNorth(worldBorderPrefab);
+                }
+            }
+        }
     }
 
     // ==========================================================

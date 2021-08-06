@@ -59,6 +59,11 @@ public class Chunk : MonoBehaviour
     private GameObject eastChunkBorder;
     private GameObject westChunkBorder;
 
+    private GameObject northWorldBorder;
+    private GameObject southWorldBorder;
+    private GameObject eastWorldBorder;
+    private GameObject westWorldBorder;
+
     // The size of a block for checking collisions
     private static Vector3 blockHalfExtents = new Vector3(0.4f, 0.4f, 0.4f);
 
@@ -89,6 +94,22 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
+        if(northWorldBorder)
+        {
+            northWorldBorder.SetActive(true);
+        }
+        if (southWorldBorder)
+        {
+            southWorldBorder.SetActive(true);
+        }
+        if (eastWorldBorder)
+        {
+            eastWorldBorder.SetActive(true);
+        }
+        if (westWorldBorder)
+        {
+            westWorldBorder.SetActive(true);
+        }
         isActive = true;
     }
     public void DisableChunk()
@@ -105,6 +126,22 @@ public class Chunk : MonoBehaviour
                     }
                 }
             }
+        }
+        if (northWorldBorder)
+        {
+            northWorldBorder.SetActive(false);
+        }
+        if (southWorldBorder)
+        {
+            southWorldBorder.SetActive(false);
+        }
+        if (eastWorldBorder)
+        {
+            eastWorldBorder.SetActive(false);
+        }
+        if (westWorldBorder)
+        {
+            westWorldBorder.SetActive(false);
         }
         isActive = false;
     }
@@ -387,6 +424,39 @@ public class Chunk : MonoBehaviour
         westChunkBorder.transform.localScale = new Vector3(blocksPerSide, blocksPerSide, 1);
         westChunkBorder.transform.localPosition = new Vector3(0, blocksPerSide / 2, blocksPerSide/2);
         westChunkBorder.transform.Rotate(Vector3.up, 270f);
+    }
+
+    // Helper function for creating world borders
+    public void AddWorldBorderNorth(GameObject prefab)
+    {
+        northWorldBorder = Instantiate(prefab);
+        northWorldBorder.transform.SetParent(transform);
+        northWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
+        northWorldBorder.transform.localPosition = new Vector3(blocksPerSide / 2, worldHeight / 2, blocksPerSide);
+    }
+    public void AddWorldBorderSouth(GameObject prefab)
+    {
+        southWorldBorder = Instantiate(prefab);
+        southWorldBorder.transform.SetParent(transform);
+        southWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
+        southWorldBorder.transform.localPosition = new Vector3(blocksPerSide / 2, worldHeight / 2, 0);
+        southWorldBorder.transform.Rotate(Vector3.up, 180f);
+    }
+    public void AddWorldBorderEast(GameObject prefab)
+    {
+        eastWorldBorder = Instantiate(prefab);
+        eastWorldBorder.transform.SetParent(transform);
+        eastWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
+        eastWorldBorder.transform.localPosition = new Vector3(blocksPerSide, worldHeight / 2, blocksPerSide / 2);
+        eastWorldBorder.transform.Rotate(Vector3.up, 90f);
+    }
+    public void AddWorldBorderWest(GameObject prefab)
+    {
+        westWorldBorder = Instantiate(prefab);
+        westWorldBorder.transform.SetParent(transform);
+        westWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
+        westWorldBorder.transform.localPosition = new Vector3(0, worldHeight / 2, blocksPerSide / 2);
+        westWorldBorder.transform.Rotate(Vector3.up, 270f);
     }
 
 
