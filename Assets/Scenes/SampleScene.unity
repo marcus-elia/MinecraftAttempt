@@ -269,8 +269,8 @@ MonoBehaviour:
   mapHeight: 16
   seed: 0
   scale: 50
-  octaves: 8
-  persistence: 5
+  octaves: 2
+  persistence: 8
   lacunarity: 1.2
 --- !u!1 &654550254
 GameObject:
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 914808280}
   speed: 4
-  gravity: -15
+  gravity: -18
   jumpHeight: 0.7
   groundCheck: {fileID: 690285283}
   groundDistance: 0.4
@@ -662,8 +662,8 @@ CharacterController:
   m_Height: 1
   m_Radius: 0.45
   m_SlopeLimit: 45
-  m_StepOffset: 0.1
-  m_SkinWidth: 0.08
+  m_StepOffset: 0.01
+  m_SkinWidth: 0.2
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
