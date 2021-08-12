@@ -6,7 +6,7 @@ Here are my goals.
 - [x] Create a Block class with 6 faces
 - [x] Make a Chunk system that generates a flat surface of blocks and a basic first-person controller
 - [x] Disable faces of Blocks that are not exposed to air
-- [ ] Reduce lag when changing chunks
+- [x] Reduce lag when changing chunks
 - [x] Highlight the Block that the cursor is touching
 - [x] Click to break Blocks
 - [ ] Make Blocks droppable and pick-upable.

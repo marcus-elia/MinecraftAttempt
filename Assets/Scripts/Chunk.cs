@@ -81,7 +81,7 @@ public class Chunk : MonoBehaviour
 
     public void EnableChunk()
     {
-        for(int y = 0; y < worldHeight; y++)
+        for(int y = 0; y <= worldHeight; y++)
         {
             for(int x = 0; x < blocksPerSide; x++)
             {
@@ -114,7 +114,7 @@ public class Chunk : MonoBehaviour
     }
     public void DisableChunk()
     {
-        for (int y = 0; y < worldHeight; y++)
+        for (int y = 0; y <= worldHeight; y++)
         {
             for (int x = 0; x < blocksPerSide; x++)
             {
@@ -226,7 +226,7 @@ public class Chunk : MonoBehaviour
     // The top and bottom neighbors of the blocks are only within this chunk
     private void SetVerticalBlockNeighbors()
     {
-        for(int y = 0; y < worldHeight - 1; y++)
+        for(int y = 0; y <= worldHeight - 1; y++)
         {
             for(int x = 0; x < blocksPerSide; x++)
             {
@@ -249,7 +249,7 @@ public class Chunk : MonoBehaviour
     // The interior block neighbors also are only within this chunk
     private void SetInteriorBlockNeighbors()
     {
-        for(int y = 0; y < worldHeight; y++)
+        for(int y = 0; y <= worldHeight; y++)
         {
             for(int x = 0; x < blocksPerSide - 1; x++)
             {
@@ -279,7 +279,7 @@ public class Chunk : MonoBehaviour
             }
         }
         // Set the neighbors of the north and east edges
-        for(int y = 0; y < worldHeight; y++)
+        for(int y = 0; y <= worldHeight; y++)
         {
             // East edge
             for(int z = 0; z < blocksPerSide - 1; z++)
@@ -315,7 +315,7 @@ public class Chunk : MonoBehaviour
 
         // Give the blocks their neighbors
         int z = blocksPerSide - 1;
-        for(int y = 0; y < worldHeight; y++)
+        for(int y = 0; y <= worldHeight; y++)
         {
             for(int x = 0; x < blocksPerSide; x++)
             {
@@ -334,7 +334,7 @@ public class Chunk : MonoBehaviour
 
         // Give the blocks their neighbors
         int z = 0;
-        for (int y = 0; y < worldHeight; y++)
+        for (int y = 0; y <= worldHeight; y++)
         {
             for (int x = 0; x < blocksPerSide; x++)
             {
@@ -353,7 +353,7 @@ public class Chunk : MonoBehaviour
 
         // Give the blocks their neighbors
         int x = blocksPerSide - 1;
-        for (int y = 0; y < worldHeight; y++)
+        for (int y = 0; y <= worldHeight; y++)
         {
             for (int z = 0; z < blocksPerSide; z++)
             {
@@ -372,7 +372,7 @@ public class Chunk : MonoBehaviour
 
         // Give the blocks their neighbors
         int x = 0;
-        for (int y = 0; y < worldHeight; y++)
+        for (int y = 0; y <= worldHeight; y++)
         {
             for (int z = 0; z < blocksPerSide; z++)
             {
@@ -476,7 +476,7 @@ public class Chunk : MonoBehaviour
     public int CountExposedFaces()
     {
         int count = 0;
-        for(int y = 0; y < worldHeight; y++)
+        for(int y = 0; y <= worldHeight; y++)
         {
             for(int x = 0; x < blocksPerSide; x++)
             {

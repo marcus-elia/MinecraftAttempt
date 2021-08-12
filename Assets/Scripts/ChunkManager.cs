@@ -33,7 +33,7 @@ public class ChunkManager : MonoBehaviour
     private int currentPlayerChunkID;
     public int renderRadius = 2;
     private Dictionary<int, GameObject> allSeenChunks;
-    private List<GameObject> currentChunks;
+    private SortedSet<int> currentChunkIDs;
 
     private int lookedAtChunkID = 0;
 
@@ -72,8 +72,8 @@ public class ChunkManager : MonoBehaviour
         // Initiate chunks
         currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, Chunk.blocksPerSide);
         allSeenChunks = new Dictionary<int, GameObject>();
-        currentChunks = new List<GameObject>();
-        // Create 20x20 square of chunks first. Do the work up front to save time.
+        currentChunkIDs = new SortedSet<int>();
+        // Create 12x12 square of chunks first. Do the work up front to save time.
         GenerateSquareOfChunks(6);
         updateChunks();
 
@@ -109,16 +109,32 @@ public class ChunkManager : MonoBehaviour
 
     private void updateChunks()
     {
-        // Disable previous chunks from drawing, and remove them from the arraylist
-        for (int i = 0; i < currentChunks.Count; i++)
+        // Calculate the list of new chunkIDs
+        SortedSet<int> newCurrentChunkIDs = GetChunkIDsAroundID(currentPlayerChunkID, renderRadius);
+
+        // If a previous chunk is not in the new radius, disable it
+        foreach(int i in currentChunkIDs)
         {
-            currentChunks[i].GetComponent<Chunk>().DisableChunk();
+            if (!newCurrentChunkIDs.Contains(i) && allSeenChunks.ContainsKey(i))
+            {
+                allSeenChunks[i].GetComponent<Chunk>().DisableChunk();
+            }
         }
-        currentChunks = new List<GameObject>();
+        // If a new chunk was not in the previous radius, enable it
+        foreach (int i in newCurrentChunkIDs)
+        {
+            if (!currentChunkIDs.Contains(i) && allSeenChunks.ContainsKey(i))
+            {
+                allSeenChunks[i].GetComponent<Chunk>().EnableChunk();
+            }
+        }
+
+        // Update the list
+        currentChunkIDs = newCurrentChunkIDs;
 
         // Go through the new chunks and add/create them
-        List<int> chunkIDs = getChunkIDsAroundID(currentPlayerChunkID, renderRadius);
-        for (int i = 0; i < chunkIDs.Count; i++)
+
+        /*for (int i = 0; i < chunkIDs.Count; i++)
         {
             int id = (chunkIDs[i]);
             if (allSeenChunks.ContainsKey(id))
@@ -130,7 +146,7 @@ public class ChunkManager : MonoBehaviour
             {
                 //CreateChunk(id);
             }
-        }
+        }*/
     }
 
     public void UpdateRenderRadius(int newRadius)
@@ -182,7 +198,7 @@ public class ChunkManager : MonoBehaviour
 
         c.GetComponent<Chunk>().EnableChunk();
         allSeenChunks.Add(id, c);
-        currentChunks.Add(c);
+        currentChunkIDs.Add(id);
         return c;
         //Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
     }
@@ -322,9 +338,9 @@ public class ChunkManager : MonoBehaviour
         return distanceFormula(v1.x, v1.z, v2.x, v2.z);
     }
     // Get a diamond shape of chunk ids centered around the given point
-    public static List<int> getChunkIDsAroundPoint(Point2D p, int radius)
+    public static SortedSet<int> getChunkIDsAroundPoint(Point2D p, int radius)
     {
-        List<int> result = new List<int>();
+        SortedSet<int> result = new SortedSet<int>();
 
         // Start at the bottom of the diamond and work up from there
         for (int b = p.z + radius; b >= p.z - radius; b--)
@@ -338,7 +354,7 @@ public class ChunkManager : MonoBehaviour
         return result;
     }
     // Wrapper
-    public static List<int> getChunkIDsAroundID(int id, int radius)
+    public static SortedSet<int> GetChunkIDsAroundID(int id, int radius)
     {
         return getChunkIDsAroundPoint(chunkIDtoPoint2D(id), radius);
     }
