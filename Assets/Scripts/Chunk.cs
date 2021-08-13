@@ -939,6 +939,10 @@ public class Chunk : MonoBehaviour
         block.GetComponent<Block>().SetCanBeBroken(isBreakable);
         block.GetComponent<Block>().SetChunkID(chunkID);
         block.GetComponent<Block>().SetIndexInChunk(x, y, z);
+        if(blocks[y, x, z] != null)
+        {
+            blocks[y, x, z].GetComponent<Block>().RemoveSelf();
+        }
         blocks[y, x, z] = block;
         return true;
     }

@@ -609,6 +609,7 @@ public class ChunkManager : MonoBehaviour
             {
                 this.ParseStringAndInsertBlock(x, groundLevel, z, fileLines[j]);
             }
+            structureFootprints.Add(new StructureFootprint(x, z, xSize, zSize));
             return;
         }  
     }
