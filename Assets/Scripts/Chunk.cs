@@ -50,6 +50,8 @@ public class Chunk : MonoBehaviour
     private Texture grassHighlightTex;
     private Texture stoneTex;
     private Texture stoneHighlightTex;
+    private Texture woodTex;
+    private Texture woodHighlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
 
@@ -168,6 +170,11 @@ public class Chunk : MonoBehaviour
     {
         stoneTex = input;
         stoneHighlightTex = highlightInput;
+    }
+    public void SetWoodTextures(Texture input, Texture highlightInput)
+    {
+        woodTex = input;
+        woodHighlightTex = highlightInput;
     }
     public void SetTerrainHeights(float[,] input)
     {
@@ -891,5 +898,48 @@ public class Chunk : MonoBehaviour
         // Then, check if it overlaps with the player
         Vector3 blockCenter = this.BlockIndexToWorldCoordinates(targetIndex);
         return !Physics.CheckBox(blockCenter, blockHalfExtents, Quaternion.identity);
+    }
+
+    // Insert a block when generating a structure
+    public bool InsertBlockAtWorldCoords(int x, int y, int z, string texture, bool isBreakable)
+    {
+        // Convert world coords to local coords
+        x = (int)(x - bottomLeft.x);
+        z = (int)(z - bottomLeft.z);
+
+        // Make sure the height is ok
+        if(y < 0 || y > worldHeight)
+        {
+            return false;
+        }
+
+        Texture mainTex, highlightTex;
+        // Get the texture
+        if(texture == "stone")
+        {
+            mainTex = stoneTex; highlightTex = stoneHighlightTex;
+        }
+        else if(texture == "grass")
+        {
+            mainTex = grassTex; highlightTex = grassHighlightTex;
+        }
+        else
+        {
+            mainTex = woodTex; highlightTex = woodHighlightTex;
+        }
+
+        // Create the new block
+        GameObject block = new GameObject();
+        block.AddComponent<Block>();
+        block.transform.SetParent(transform);
+        block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
+        block.GetComponent<Block>().CreateFaces();
+        block.GetComponent<Block>().SetTextures(mainTex, highlightTex);
+        block.GetComponent<Block>().ApplyMainTexture();
+        block.GetComponent<Block>().SetCanBeBroken(isBreakable);
+        block.GetComponent<Block>().SetChunkID(chunkID);
+        block.GetComponent<Block>().SetIndexInChunk(x, y, z);
+        blocks[y, x, z] = block;
+        return true;
     }
 }

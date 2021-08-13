@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public struct Point2D
@@ -41,6 +42,8 @@ public class ChunkManager : MonoBehaviour
     public Texture grassHighlightTex;
     public Texture stoneTex;
     public Texture stoneHighlightTex;
+    public Texture woodTex;
+    public Texture woodHighlightTex;
 
     public GameObject chunkBorderPrefab;
     public GameObject worldBorderPrefab;
@@ -76,6 +79,9 @@ public class ChunkManager : MonoBehaviour
         // Create 12x12 square of chunks first. Do the work up front to save time.
         GenerateSquareOfChunks(6);
         updateChunks();
+
+        // Test generating structures
+        this.GenerateStructureFromFile("house.txt");
 
         // Put the player on the ground
         float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
@@ -166,6 +172,7 @@ public class ChunkManager : MonoBehaviour
                                                     Noise.NormalizeMode.Global));
         c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
         c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
+        c.GetComponent<Chunk>().SetWoodTextures(woodTex, woodHighlightTex);
         c.GetComponent<Chunk>().InitializeBlocks();
         //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 
@@ -468,6 +475,67 @@ public class ChunkManager : MonoBehaviour
                     lookedAtChunk.ReactToRightClick();
                 }
             }
+        }
+    }
+
+    // ====================================================
+    //
+    //        Functions for Generating Structures
+    //
+    // ====================================================
+    public bool InsertBlockAtWorldCoords(int x, int y, int z, string texture, bool isBreakable)
+    {
+        int chunkID = this.getChunkIDContainingPoint(new Vector3(x, y, z), Chunk.blocksPerSide);
+        // If the chunk is outside the world border, stop
+        if(!allSeenChunks.ContainsKey(chunkID))
+        {
+            return false;
+        }
+        Chunk c = allSeenChunks[chunkID].GetComponent<Chunk>();
+        return c.InsertBlockAtWorldCoords(x, y, z, texture, isBreakable);
+    }
+
+    // The string must be of the form
+    // "x,y,z,texture,T/F"
+    public bool ParseStringAndInsertBlock(string blockInstruction)
+    {
+        // Ignore comments
+        if(blockInstruction.StartsWith("//"))
+        {
+            return false;
+        }
+        // If not a comment, split on commas. Expect 5 pieces.
+        string[] args = blockInstruction.Split(',');
+        if(args.Length != 5)
+        {
+            Debug.LogError("Block instruction string must have 4 commas");
+            return false;
+        }
+        int x, y, z;
+        bool success = true;
+        success = int.TryParse(args[0], out x) && success;
+        success = int.TryParse(args[1], out y) && success;
+        success = int.TryParse(args[2], out z) && success;
+        if(!success)
+        {
+            Debug.LogError("Could not parse ints " + args[0] + " " + args[1] + " " + args[2]);
+            return false;
+        }
+
+        string texture = args[3];
+        bool isBreakable = (args[4] == "T" || args[4] == "t" || args[4] == "true" || args[4] == "true");
+        return InsertBlockAtWorldCoords(x, y, z, texture, isBreakable);
+    }
+
+    public void GenerateStructureFromFile(string filename)
+    {
+        // This is based on a tutorial by PrefixWiz https://www.youtube.com/watch?v=1OOWHB-BOAY
+        string filepath = Application.streamingAssetsPath + "/StructureFiles/" + filename;
+        string[] fileLines = File.ReadAllLines(filepath);
+
+        for(int i = 0; i < fileLines.Length; i++)
+        {
+            this.ParseStringAndInsertBlock(fileLines[i]);
         }
     }
 }
