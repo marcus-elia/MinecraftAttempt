@@ -29,15 +29,39 @@ public struct Point3D
     }
 }
 
+public struct StructureFootprint
+{
+    public int x, z, xWidth, zWidth;
+    public StructureFootprint(int x, int z, int xWidth, int zWidth)
+    {
+        this.x = x;           this.z = z;
+        this.xWidth = xWidth; this.zWidth = zWidth;
+    }
+}
+
 public class ChunkManager : MonoBehaviour
 {
+    // Always keep track of where the player is
     private int currentPlayerChunkID;
-    public int renderRadius = 2;
+
+    // A dictionary of every chunk that has been generated
     private Dictionary<int, GameObject> allSeenChunks;
+    // The ID's of chunks currently within the render radius
     private SortedSet<int> currentChunkIDs;
+
+    private List<StructureFootprint> structureFootprints = new List<StructureFootprint>();
+    private const int STRUCTURE_TRIES = 5;
+
+    // The player can change the render radius
+    public int renderRadius = 2;
 
     private int lookedAtChunkID = 0;
 
+    // Determines the total world size (this number is half of the sidelength of the world)
+    private static int numberOfChunks = 3;
+    private static int worldBorderLength = numberOfChunks * Chunk.blocksPerSide;
+
+    // Textures
     public Texture grassTex;
     public Texture grassHighlightTex;
     public Texture stoneTex;
@@ -76,12 +100,13 @@ public class ChunkManager : MonoBehaviour
         currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, Chunk.blocksPerSide);
         allSeenChunks = new Dictionary<int, GameObject>();
         currentChunkIDs = new SortedSet<int>();
-        // Create 12x12 square of chunks first. Do the work up front to save time.
-        GenerateSquareOfChunks(6);
-        updateChunks();
-
+        // Create the square of chunks first. Do the work up front to avoid lag.
+        GenerateSquareOfChunks(numberOfChunks);
         // Test generating structures
         this.GenerateStructureFromFile("house.txt");
+
+        // Set the radius of visible chunks
+        updateChunks();    
 
         // Put the player on the ground
         float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
@@ -212,25 +237,25 @@ public class ChunkManager : MonoBehaviour
 
     public void GenerateSquareOfChunks(int squareSize)
     {
-        for(int i = -squareSize/2; i <= squareSize/2; i++)
+        for(int i = -squareSize; i <= squareSize; i++)
         {
-            for (int j = -squareSize / 2; j <= squareSize / 2; j++)
+            for (int j = -squareSize; j <= squareSize; j++)
             {
                 int id = ChunkManager.chunkCoordsToChunkID(i, j);
                 GameObject c = CreateChunk(id);
-                if(i == -squareSize/2)
+                if(i == -squareSize)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderWest(worldBorderPrefab);
                 }
-                else if(i == squareSize / 2)
+                else if(i == squareSize)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderEast(worldBorderPrefab);
                 }
-                if (j == -squareSize / 2)
+                if (j == -squareSize)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderSouth(worldBorderPrefab);
                 }
-                else if (j == squareSize / 2)
+                else if (j == squareSize)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderNorth(worldBorderPrefab);
                 }
@@ -497,7 +522,7 @@ public class ChunkManager : MonoBehaviour
 
     // The string must be of the form
     // "x,y,z,texture,T/F"
-    public bool ParseStringAndInsertBlock(string blockInstruction)
+    public bool ParseStringAndInsertBlock(int xBase, int yBase, int zBase, string blockInstruction)
     {
         // Ignore comments
         if(blockInstruction.StartsWith("//"))
@@ -524,7 +549,7 @@ public class ChunkManager : MonoBehaviour
 
         string texture = args[3];
         bool isBreakable = (args[4] == "T" || args[4] == "t" || args[4] == "true" || args[4] == "true");
-        return InsertBlockAtWorldCoords(x, y, z, texture, isBreakable);
+        return InsertBlockAtWorldCoords(x + xBase, y + yBase, z + zBase, texture, isBreakable);
     }
 
     public void GenerateStructureFromFile(string filename)
@@ -533,10 +558,73 @@ public class ChunkManager : MonoBehaviour
         string filepath = Application.streamingAssetsPath + "/StructureFiles/" + filename;
         string[] fileLines = File.ReadAllLines(filepath);
 
-        for(int i = 0; i < fileLines.Length; i++)
+        // The first line should be the "x,y,z" dimensions of the structure
+        string[] args = fileLines[0].Split(',');
+        if (args.Length != 3)
         {
-            this.ParseStringAndInsertBlock(fileLines[i]);
+            Debug.LogError("Structure dimension string must have 2 commas, but received " + fileLines[0]);
+            return;
         }
+        int xSize, ySize, zSize;
+        bool success = true;
+        success = int.TryParse(args[0], out xSize) && success;
+        success = int.TryParse(args[1], out ySize) && success;
+        success = int.TryParse(args[2], out zSize) && success;
+        if (!success)
+        {
+            Debug.LogError("Could not parse ints " + args[0] + " " + args[1] + " " + args[2]);
+            return;
+        }
+
+        // Choose where to put the structure based on its dimensions
+        for(int i = 0; i < STRUCTURE_TRIES; i++)
+        {
+            // Get a random location to try building the structure
+            int x = Random.Range(-worldBorderLength + xSize, worldBorderLength - xSize);
+            int z = Random.Range(-worldBorderLength + zSize, worldBorderLength - zSize);
+            int groundLevel = GetGroundLevelAtWorldCoords(x, z);
+
+            // If the ground is too high, no
+            if(groundLevel + ySize > Chunk.worldHeight)
+            {
+                continue;
+            }
+
+            // Check if it would overlap with an existing structure
+            bool overlaps = false;
+            foreach(StructureFootprint fp in structureFootprints)
+            {
+                if(OverlapsFootprint(x, z, xSize, zSize, fp))
+                {
+                    overlaps = true;
+                }
+            }
+            if(overlaps)
+            {
+                continue;
+            }
+
+            // If there were no problems, make the new structure
+            for (int j = 1; j < fileLines.Length; j++)
+            {
+                this.ParseStringAndInsertBlock(x, groundLevel, z, fileLines[j]);
+            }
+            return;
+        }  
+    }
+
+    public int GetGroundLevelAtWorldCoords(int x, int z)
+    {
+        Vector3 location = new Vector3(x, 1, z);
+        int chunkID = this.getChunkIDContainingPoint(location, Chunk.blocksPerSide);
+        return (int)allSeenChunks[chunkID].GetComponent<Chunk>().GetGroundLevel(location);
+    }
+
+    // Check if these parameters describe a structure that would overlap an existing footprint
+    public bool OverlapsFootprint(int x, int z, int xWidth, int zWidth, StructureFootprint footprint)
+    {
+        return !(x > footprint.x + footprint.xWidth || x + xWidth < footprint.x ||
+            z > footprint.z + footprint.zWidth || z + zWidth < footprint.z);
     }
 }
 

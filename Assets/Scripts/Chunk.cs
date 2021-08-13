@@ -520,7 +520,7 @@ public class Chunk : MonoBehaviour
         Point2D indices = GetBlockIndex(position);
         int x = indices.x;
         int z = indices.z;
-        int y = worldHeight - 1;
+        int y = worldHeight;
         while(blocks[y,x,z] == null)
         {
             y--;
