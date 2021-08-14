@@ -29,19 +29,6 @@ public struct Point3D
     }
 }
 
-public class Point3DEqualityComparer : IEqualityComparer<Point3D>
-{
-    public bool Equals(Point3D p1, Point3D p2)
-    {
-        return p1.x == p2.x && p1.y == p2.y && p1.z == p2.z;
-    }
-    public int GetHashCode(Point3D p)
-    {
-        int hCode = p.x*256 + p.y*16 + p.z;
-        return hCode.GetHashCode();
-    }
-}
-
 public struct StructureFootprint
 {
     public int x, z, xWidth, zWidth;
@@ -61,6 +48,8 @@ public class ChunkManager : MonoBehaviour
     private Dictionary<int, GameObject> allSeenChunks;
     // The ID's of chunks currently within the render radius
     private SortedSet<int> currentChunkIDs;
+    // Keep track of chunks that need to be enabled (true) or disabled (false)
+    private Dictionary<int, bool> chunkLoadingJobs;
 
     private List<StructureFootprint> structureFootprints = new List<StructureFootprint>();
     private const int STRUCTURE_TRIES = 5;
@@ -113,13 +102,14 @@ public class ChunkManager : MonoBehaviour
         currentPlayerChunkID = getChunkIDContainingPoint(playerTransform.position, Chunk.blocksPerSide);
         allSeenChunks = new Dictionary<int, GameObject>();
         currentChunkIDs = new SortedSet<int>();
+        chunkLoadingJobs = new Dictionary<int, bool>();
         // Create the square of chunks first. Do the work up front to avoid lag.
         GenerateSquareOfChunks(numberOfChunks);
         // Test generating structures
         this.GenerateStructureFromFile("house.txt");
 
         // Set the radius of visible chunks
-        updateChunks();    
+        //updateChunks();    
 
         // Put the player on the ground
         float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
@@ -132,8 +122,9 @@ public class ChunkManager : MonoBehaviour
         // Update chunks if the player moved
         if (updateCurrentPlayerChunkID())
         {
-            updateChunks();
+            //updateChunks();
         }
+        //DoChunkLoadingJobs(1);
         Raycast();
         ReactToClick();
         ReactToRightClick();
@@ -161,7 +152,8 @@ public class ChunkManager : MonoBehaviour
         {
             if (!newCurrentChunkIDs.Contains(i) && allSeenChunks.ContainsKey(i))
             {
-                allSeenChunks[i].GetComponent<Chunk>().DisableChunk();
+                //allSeenChunks[i].GetComponent<Chunk>().DisableChunk();
+                chunkLoadingJobs[i] = false;
             }
         }
         // If a new chunk was not in the previous radius, enable it
@@ -169,7 +161,8 @@ public class ChunkManager : MonoBehaviour
         {
             if (!currentChunkIDs.Contains(i) && allSeenChunks.ContainsKey(i))
             {
-                allSeenChunks[i].GetComponent<Chunk>().EnableChunk();
+                //allSeenChunks[i].GetComponent<Chunk>().EnableChunk();
+                chunkLoadingJobs[i] = true;
             }
         }
 
@@ -272,6 +265,27 @@ public class ChunkManager : MonoBehaviour
                 {
                     c.GetComponent<Chunk>().AddWorldBorderNorth(worldBorderPrefab);
                 }
+            }
+        }
+    }
+
+    public void DoChunkLoadingJobs(int n)
+    {
+        foreach(int id in chunkLoadingJobs.Keys)
+        {
+            if(chunkLoadingJobs[id])
+            {
+                allSeenChunks[id].GetComponent<Chunk>().EnableChunk();
+            }
+            else
+            {
+                allSeenChunks[id].GetComponent<Chunk>().DisableChunk();
+            }
+            chunkLoadingJobs.Remove(id);
+            n--;
+            if(n == 0)
+            {
+                return;
             }
         }
     }
