@@ -549,6 +549,8 @@ public class ChunkManager : MonoBehaviour
 
     // The string must be of the form
     // "x,y,z,texture,T/F"
+    // Or the x,y,z could be ranges
+    // For example 1-5,2,1-5,stone,t would make 25 blocks
     public bool ParseStringAndInsertBlock(int xBase, int yBase, int zBase, string blockInstruction)
     {
         // Ignore comments
@@ -563,20 +565,67 @@ public class ChunkManager : MonoBehaviour
             Debug.LogError("Block instruction string must have 4 commas");
             return false;
         }
-        int x, y, z;
+        int x, y, z, xmin, xmax, ymin, ymax, zmin, zmax;
         bool success = true;
-        success = int.TryParse(args[0], out x) && success;
-        success = int.TryParse(args[1], out y) && success;
-        success = int.TryParse(args[2], out z) && success;
-        if(!success)
+        success = int.TryParse(args[0], out x);
+        if(success)
         {
-            Debug.LogError("Could not parse ints " + args[0] + " " + args[1] + " " + args[2]);
-            return false;
+            xmin = x; xmax = x;
+        }
+        else
+        {
+            string[] xargs = args[0].Split('-');
+            if(xargs.Length != 2)
+            {
+                Debug.LogError("Invalid range specified: " + args[0]);
+            }
+            xmin = int.Parse(xargs[0]);
+            xmax = int.Parse(xargs[1]);
+        }
+        success = int.TryParse(args[1], out y);
+        if (success)
+        {
+            ymin = y; ymax = y;
+        }
+        else
+        {
+            string[] yargs = args[1].Split('-');
+            if (yargs.Length != 2)
+            {
+                Debug.LogError("Invalid range specified: " + args[1]);
+            }
+            ymin = int.Parse(yargs[0]);
+            ymax = int.Parse(yargs[1]);
+        }
+        success = int.TryParse(args[2], out z);
+        if (success)
+        {
+            zmin = z; zmax = z;
+        }
+        else
+        {
+            string[] zargs = args[2].Split('-');
+            if (zargs.Length != 2)
+            {
+                Debug.LogError("Invalid range specified: " + args[2]);
+            }
+            zmin = int.Parse(zargs[0]);
+            zmax = int.Parse(zargs[1]);
         }
 
         string texture = args[3];
         bool isBreakable = (args[4] == "T" || args[4] == "t" || args[4] == "true" || args[4] == "true");
-        return InsertBlockAtWorldCoords(x + xBase, y + yBase, z + zBase, texture, isBreakable);
+        for(x = xmin; x <= xmax; x++)
+        {
+            for(y = ymin; y <= ymax; y++)
+            {
+                for(z = zmin; z <= zmax; z++)
+                {
+                    InsertBlockAtWorldCoords(x + xBase, y + yBase, z + zBase, texture, isBreakable);
+                }
+            }
+        }
+        return true;
     }
 
     public void GenerateStructureFromFile(string filename)
