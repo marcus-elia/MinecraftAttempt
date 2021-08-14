@@ -24,8 +24,8 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int blocksPerSideSquared = blocksPerSide * blocksPerSide;
-    public static int terrainHeight = 3;
-    public static int worldHeight = 40;
+    public static int terrainHeight = 4;
+    public static int worldHeight = 60;
     //public static int groundLevel = 1;
     private int perlinValue;
     private Vector3 bottomLeft;
@@ -56,6 +56,8 @@ public class Chunk : MonoBehaviour
     private Texture woodHighlightTex;
     private Texture limestoneTex;
     private Texture limestoneHighlightTex;
+    private Texture limestonefenceTex;
+    private Texture limestonefenceHighlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
     private HashSet<int> activeBlockLocations = new HashSet<int>();
@@ -178,25 +180,19 @@ public class Chunk : MonoBehaviour
         // Store the bottom left of the chunk in world coordinates
         bottomLeft = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
     }
-    public void SetGrassTextures(Texture input, Texture highlightInput)
+    
+    public void SetTextures(Dictionary<string, Texture> textureDict)
     {
-        grassTex = input;
-        grassHighlightTex = highlightInput;
-    }
-    public void SetStoneTextures(Texture input, Texture highlightInput)
-    {
-        stoneTex = input;
-        stoneHighlightTex = highlightInput;
-    }
-    public void SetWoodTextures(Texture input, Texture highlightInput)
-    {
-        woodTex = input;
-        woodHighlightTex = highlightInput;
-    }
-    public void SetLimestoneTextures(Texture input, Texture highlightInput)
-    {
-        limestoneTex = input;
-        limestoneHighlightTex = highlightInput;
+        grassTex = textureDict["grass"];
+        grassHighlightTex = textureDict["grassH"];
+        stoneTex = textureDict["stone"];
+        stoneHighlightTex = textureDict["stoneH"];
+        woodTex = textureDict["wood"];
+        woodHighlightTex = textureDict["woodH"];
+        limestoneTex = textureDict["limestone"];
+        limestoneHighlightTex = textureDict["limestoneH"];
+        limestonefenceTex = textureDict["limestonefence"];
+        limestonefenceHighlightTex = textureDict["limestonefenceH"];
     }
     public void SetTerrainHeights(float[,] input)
     {
@@ -956,6 +952,10 @@ public class Chunk : MonoBehaviour
         else if(texture == "limestone")
         {
             mainTex = limestoneTex; highlightTex = limestoneHighlightTex;
+        }
+        else if(texture == "limestonefence")
+        {
+            mainTex = limestonefenceTex; highlightTex = limestonefenceHighlightTex;
         }
         else
         {

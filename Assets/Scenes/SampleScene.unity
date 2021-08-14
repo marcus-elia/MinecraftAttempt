@@ -264,6 +264,8 @@ MonoBehaviour:
   woodHighlightTex: {fileID: 2800000, guid: 8ad6ed9ffb6fb0d49a9afae04e644480, type: 3}
   limestoneTex: {fileID: 2800000, guid: e60d30cd020b5c6449fbe8d2569b51e2, type: 3}
   limestoneHighlightTex: {fileID: 2800000, guid: ff13329c2f90d9848ad135659131c9b3, type: 3}
+  limestonefenceTex: {fileID: 2800000, guid: aeee694e07ea7e546a7f392d59ff42d7, type: 3}
+  limestonefenceHighlightTex: {fileID: 2800000, guid: 0946d1826c4ac634c9898356b7a4d0a0, type: 3}
   chunkBorderPrefab: {fileID: 7563736160133425841, guid: 4d8857467294df442a591acb00fbfbd5, type: 3}
   worldBorderPrefab: {fileID: 4079126268282017019, guid: 317fc2ddfe7bdcd42b1388aee976a3cc, type: 3}
   playerTransform: {fileID: 914808278}

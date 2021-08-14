@@ -1,4 +1,4 @@
-36,30,30
+32,40,30
 // ====================
 //     Left arch
 // ====================
@@ -141,3 +141,20 @@
 28,3-12,5,limestone,t
 29,3-12,5,limestone,t
 25-26,0-2,5,limestone,t
+// ====================
+//    Middle Section
+// ====================
+// Pillar 1
+0-1,13-16,0,limestone,t
+0-1,13-22,1-5,limestone,t
+// Pillar 2
+10-11,13-16,0,limestone,t
+10-11,13-22,1-5,limestone,t
+// Pillar 3
+20-21,13-16,0,limestone,t
+20-21,13-22,1-5,limestone,t
+// Pillar 4
+30-31,13-16,0,limestone,t
+30-31,13-22,1-5,limestone,t
+// Fence
+0-31,13,0,limestonefence,t

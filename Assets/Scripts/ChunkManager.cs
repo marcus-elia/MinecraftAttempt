@@ -72,6 +72,9 @@ public class ChunkManager : MonoBehaviour
     public Texture woodHighlightTex;
     public Texture limestoneTex;
     public Texture limestoneHighlightTex;
+    public Texture limestonefenceTex;
+    public Texture limestonefenceHighlightTex;
+    private Dictionary<string, Texture> texDict = new Dictionary<string, Texture>();
 
     public GameObject chunkBorderPrefab;
     public GameObject worldBorderPrefab;
@@ -97,6 +100,18 @@ public class ChunkManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Make the dictionary of textures
+        texDict["grass"] = grassTex;
+        texDict["grassH"] = grassHighlightTex;
+        texDict["stone"] = stoneTex;
+        texDict["stoneH"] = stoneHighlightTex;
+        texDict["wood"] = woodTex;
+        texDict["woodH"] = woodHighlightTex;
+        texDict["limestone"] = limestoneTex;
+        texDict["limestoneH"] = limestoneHighlightTex;
+        texDict["limestonefence"] = limestonefenceTex;
+        texDict["limestonefenceH"] = limestonefenceHighlightTex;
+
         // Initiate Perlin noise
         seed = Mathf.FloorToInt(Random.Range(0, int.MaxValue));
 
@@ -203,10 +218,7 @@ public class ChunkManager : MonoBehaviour
         c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
                                                     scale, octaves, persistence, lacunarity, offset,
                                                     Noise.NormalizeMode.Global));
-        c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
-        c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
-        c.GetComponent<Chunk>().SetWoodTextures(woodTex, woodHighlightTex);
-        c.GetComponent<Chunk>().SetLimestoneTextures(limestoneTex, limestoneHighlightTex);
+        c.GetComponent<Chunk>().SetTextures(texDict);
         c.GetComponent<Chunk>().InitializeBlocks();
         //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 
