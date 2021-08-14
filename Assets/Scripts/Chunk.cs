@@ -54,6 +54,8 @@ public class Chunk : MonoBehaviour
     private Texture stoneHighlightTex;
     private Texture woodTex;
     private Texture woodHighlightTex;
+    private Texture limestoneTex;
+    private Texture limestoneHighlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
     private HashSet<int> activeBlockLocations = new HashSet<int>();
@@ -190,6 +192,11 @@ public class Chunk : MonoBehaviour
     {
         woodTex = input;
         woodHighlightTex = highlightInput;
+    }
+    public void SetLimestoneTextures(Texture input, Texture highlightInput)
+    {
+        limestoneTex = input;
+        limestoneHighlightTex = highlightInput;
     }
     public void SetTerrainHeights(float[,] input)
     {
@@ -942,9 +949,18 @@ public class Chunk : MonoBehaviour
         {
             mainTex = grassTex; highlightTex = grassHighlightTex;
         }
-        else
+        else if(texture == "wood")
         {
             mainTex = woodTex; highlightTex = woodHighlightTex;
+        }
+        else if(texture == "limestone")
+        {
+            mainTex = limestoneTex; highlightTex = limestoneHighlightTex;
+        }
+        else
+        {
+            Debug.Log("Invalid texture " + texture + ". Defaulting to grass.");
+            mainTex = grassTex; highlightTex = grassHighlightTex;
         }
 
         // Create the new block

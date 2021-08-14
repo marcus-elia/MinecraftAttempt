@@ -70,6 +70,8 @@ public class ChunkManager : MonoBehaviour
     public Texture stoneHighlightTex;
     public Texture woodTex;
     public Texture woodHighlightTex;
+    public Texture limestoneTex;
+    public Texture limestoneHighlightTex;
 
     public GameObject chunkBorderPrefab;
     public GameObject worldBorderPrefab;
@@ -106,7 +108,7 @@ public class ChunkManager : MonoBehaviour
         // Create the square of chunks first. Do the work up front to avoid lag.
         GenerateSquareOfChunks(numberOfChunks);
         // Test generating structures
-        this.GenerateStructureFromFile("house.txt");
+        this.GenerateStructureFromFile("notredame.txt");
 
         // Set the radius of visible chunks
         //updateChunks();    
@@ -204,6 +206,7 @@ public class ChunkManager : MonoBehaviour
         c.GetComponent<Chunk>().SetGrassTextures(grassTex, grassHighlightTex);
         c.GetComponent<Chunk>().SetStoneTextures(stoneTex, stoneHighlightTex);
         c.GetComponent<Chunk>().SetWoodTextures(woodTex, woodHighlightTex);
+        c.GetComponent<Chunk>().SetLimestoneTextures(limestoneTex, limestoneHighlightTex);
         c.GetComponent<Chunk>().InitializeBlocks();
         //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 
@@ -562,7 +565,7 @@ public class ChunkManager : MonoBehaviour
         string[] args = blockInstruction.Split(',');
         if(args.Length != 5)
         {
-            Debug.LogError("Block instruction string must have 4 commas");
+            Debug.LogError("Block instruction string must have 4 commas. Received " + blockInstruction);
             return false;
         }
         int x, y, z, xmin, xmax, ymin, ymax, zmin, zmax;
