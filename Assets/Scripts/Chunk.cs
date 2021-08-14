@@ -24,7 +24,8 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int blocksPerSideSquared = blocksPerSide * blocksPerSide;
-    public static int worldHeight = 10;
+    public static int terrainHeight = 8;
+    public static int worldHeight = 40;
     //public static int groundLevel = 1;
     private int perlinValue;
     private Vector3 bottomLeft;
@@ -224,7 +225,7 @@ public class Chunk : MonoBehaviour
             {
                 // Get the terrain height at this spot in the chunk
                 // No idea why 15 - z is necessary instead of just z, but that's what makes it work
-                int groundLevel = Mathf.Min(worldHeight, Mathf.FloorToInt(1.5f*worldHeight*this.terrainHeights[x, 15 - z]) + 1);
+                int groundLevel = Mathf.Min(terrainHeight, Mathf.FloorToInt(1.5f* terrainHeight * this.terrainHeights[x, 15 - z]) + 1);
                 for (int y = 1; y <= groundLevel; y++)
                 {
                     GameObject block = new GameObject();
