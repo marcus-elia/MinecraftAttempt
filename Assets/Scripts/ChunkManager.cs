@@ -685,6 +685,17 @@ public class ChunkManager : MonoBehaviour
             {
                 this.ParseStringAndInsertBlock(x, groundLevel, z, fileLines[j]);
             }
+            // Fill in grass below the footprint
+            for(int a = 0; a < xSize; a++)
+            {
+                for(int b = 1; b < groundLevel; b++)
+                {
+                    for(int c = 0; c < zSize; c++)
+                    {
+                        InsertBlockAtWorldCoords(a + x, b, c + z, "grass", true);
+                    }
+                }
+            }
             structureFootprints.Add(new StructureFootprint(x, z, xSize, zSize));
             return;
         }  
