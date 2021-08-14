@@ -615,6 +615,11 @@ public class ChunkManager : MonoBehaviour
             zmin = int.Parse(zargs[0]);
             zmax = int.Parse(zargs[1]);
         }
+        if(xmin > xmax || ymin > ymax || zmin > zmax)
+        {
+            Debug.LogError("Specified range has min > max");
+            return false;
+        }
 
         string texture = args[3];
         bool isBreakable = (args[4] == "T" || args[4] == "t" || args[4] == "true" || args[4] == "true");
