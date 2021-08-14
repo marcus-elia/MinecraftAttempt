@@ -963,6 +963,7 @@ public class Chunk : MonoBehaviour
             blocks[y, x, z].GetComponent<Block>().RemoveSelf();
         }
         blocks[y, x, z] = block;
+        activeBlockLocations.Add(BlockCoordsToIndex(x, y, z));
         return true;
     }
 
