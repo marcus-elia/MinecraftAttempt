@@ -29,6 +29,19 @@ public struct Point3D
     }
 }
 
+public class Point3DEqualityComparer : IEqualityComparer<Point3D>
+{
+    public bool Equals(Point3D p1, Point3D p2)
+    {
+        return p1.x == p2.x && p1.y == p2.y && p1.z == p2.z;
+    }
+    public int GetHashCode(Point3D p)
+    {
+        int hCode = p.x*256 + p.y*16 + p.z;
+        return hCode.GetHashCode();
+    }
+}
+
 public struct StructureFootprint
 {
     public int x, z, xWidth, zWidth;

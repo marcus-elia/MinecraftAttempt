@@ -23,6 +23,7 @@ public class Chunk : MonoBehaviour
     private int chunkID;
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
+    public static int blocksPerSideSquared = blocksPerSide * blocksPerSide;
     public static int worldHeight = 10;
     //public static int groundLevel = 1;
     private int perlinValue;
@@ -54,6 +55,7 @@ public class Chunk : MonoBehaviour
     private Texture woodHighlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
+    private HashSet<int> activeBlockLocations = new HashSet<int>();
 
     private GameObject chunkBorderPrefab;
     private GameObject northChunkBorder;
@@ -83,7 +85,13 @@ public class Chunk : MonoBehaviour
 
     public void EnableChunk()
     {
-        for(int y = 0; y <= worldHeight; y++)
+        foreach (int index in activeBlockLocations)
+        {
+            int x, y, z;
+            IndexToBlockCoords(index, out x, out y, out z);
+            blocks[y, x, z].GetComponent<Block>().EnableRendering();
+        }
+        /*for (int y = 0; y <= worldHeight; y++)
         {
             for(int x = 0; x < blocksPerSide; x++)
             {
@@ -95,7 +103,7 @@ public class Chunk : MonoBehaviour
                     }
                 }
             }
-        }
+        }*/
         if(northWorldBorder)
         {
             northWorldBorder.SetActive(true);
@@ -116,7 +124,13 @@ public class Chunk : MonoBehaviour
     }
     public void DisableChunk()
     {
-        for (int y = 0; y <= worldHeight; y++)
+        foreach(int index in activeBlockLocations)
+        {
+            int x, y, z;
+            IndexToBlockCoords(index, out x, out y, out z);
+            blocks[y, x, z].GetComponent<Block>().DisableRendering();
+        }
+        /*for (int y = 0; y <= worldHeight; y++)
         {
             for (int x = 0; x < blocksPerSide; x++)
             {
@@ -128,7 +142,7 @@ public class Chunk : MonoBehaviour
                     }
                 }
             }
-        }
+        }*/
         if (northWorldBorder)
         {
             northWorldBorder.SetActive(false);
@@ -199,6 +213,7 @@ public class Chunk : MonoBehaviour
                 block.GetComponent<Block>().SetChunkID(chunkID);
                 block.GetComponent<Block>().SetIndexInChunk(x, 0, z);
                 blocks[0, x, z] = block;
+                this.activeBlockLocations.Add(BlockCoordsToIndex(x, 0, z));
             }
         }
 
@@ -223,6 +238,7 @@ public class Chunk : MonoBehaviour
                     block.GetComponent<Block>().SetChunkID(chunkID);
                     block.GetComponent<Block>().SetIndexInChunk(x, y, z);
                     blocks[y, x, z] = block;
+                    this.activeBlockLocations.Add(BlockCoordsToIndex(x, y, z));
                 }
             }
         }
@@ -651,6 +667,7 @@ public class Chunk : MonoBehaviour
             Destroy(highlightedBlock.GetComponent<Collider>());
             Destroy(highlightedBlock);
             highlightedBlock = null;
+            activeBlockLocations.Remove(BlockCoordsToIndex(highlightedIndex.x, highlightedIndex.y, highlightedIndex.z));
         }
     }
 
@@ -747,6 +764,7 @@ public class Chunk : MonoBehaviour
         block.GetComponent<Block>().SetIndexInChunk(x, y, z);
         block.GetComponent<Block>().ApplyMainTexture();
         blocks[y, x, z] = block;
+        activeBlockLocations.Add(BlockCoordsToIndex(x, y, z));
     }
 
     // This assumes the x y z block has been created, but doesn't have neighbors set
@@ -945,5 +963,21 @@ public class Chunk : MonoBehaviour
         }
         blocks[y, x, z] = block;
         return true;
+    }
+
+    // Convert blocks to indices
+    public static int BlockCoordsToIndex(int x, int y, int z)
+    {
+        return y * blocksPerSideSquared + x * blocksPerSide + z;
+    }
+    public static void IndexToBlockCoords(int index, out int x, out int y, out int z)
+    {
+        z = index % blocksPerSide;
+        index -= z;
+        index /= blocksPerSide;
+        x = index % blocksPerSide;
+        index -= x;
+        index /= blocksPerSide;
+        y = index;
     }
 }
