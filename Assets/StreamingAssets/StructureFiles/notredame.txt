@@ -3,9 +3,9 @@
 //     Left arch
 // ====================
 // Left Pillar
-0-1,0-12,0-5,limestone,t
+0-1,0-12,0-7,limestone,t
 // Right Pillar
-10-11,0-12,0-5,limestone,t
+10-11,0-12,0-7,limestone,t
 // Arch
 2,6-12,1,limestone,t
 3,8-12,1,limestone,t
@@ -52,7 +52,7 @@
 // ====================
 // Left Pillar is shared with Right Pillar of Left arch
 // Right Pillar
-20-21,0-12,0-5,limestone,t
+20-21,0-12,0-7,limestone,t
 // Arch
 12,6-12,1,limestone,t
 13,8-12,1,limestone,t
@@ -99,7 +99,7 @@
 // ====================
 // Left Pillar is shared with Right Pillar of Center arch
 // Right Pillar
-30-31,0-12,0-5,limestone,t
+30-31,0-12,0-7,limestone,t
 // Arch
 22,6-12,1,limestone,t
 23,8-12,1,limestone,t
@@ -145,13 +145,13 @@
 //    Middle Section
 // ====================
 // Pillar 1
-0-1,13-20,0-5,limestone,t
+0-1,13-20,0-7,limestone,t
 // Pillar 2
-10-11,13-20,0-5,limestone,t
+10-11,13-20,0-7,limestone,t
 // Pillar 3
-20-21,13-20,0-5,limestone,t
+20-21,13-20,0-7,limestone,t
 // Pillar 4
-30-31,13-20,0-5,limestone,t
+30-31,13-20,0-7,limestone,t
 // Fence
 0-31,13,0,limestonefence,t
 // Left windows
@@ -169,7 +169,7 @@
 25-26,13-20,1,limestone,t
 27-28,13-17,2,darkglass,t
 27-28,18-20,1,limestone,t
-29,13-22,1,limestone,t
+29,13-20,1,limestone,t
 // Center circle
 12,13-15,1,limestone,t
 12,16-17,2,darkglass,t
@@ -190,14 +190,18 @@
 19,13-15,1,limestone,t
 19,16-17,2,darkglass,t
 19,18-20,1,limestone,t
+// Floors
+1-29,12,1-7,limestone,t
 // ====================
 //      Layer 3
 // ====================
 // Pillars
-0-1,21-26,0-5,limestone,t
-10-11,21-26,0-5,limestone,t
-20-21,21-26,0-5,limestone,t
-30-31,21-26,0-5,limestone,t
+0-1,21-26,0-7,limestone,t
+10-11,21-26,0-1,limestone,t
+10-11,21-26,6-7,limestone,t
+20-21,21-26,0-1,limestone,t
+20-21,21-26,6-7,limestone,t
+30-31,21-26,0-7,limestone,t
 // Center
 13,21-26,1,limestone,t
 15-16,21-26,1,limestone,t
@@ -212,6 +216,10 @@
 25-26,21-26,1,limestone,t
 28,21-26,1,limestone,t
 22-29,21-26,3,limestone,t
+// Floors
+2-29,21,1-7,limestone,t
+// Fence
+0-30,22,0,limestonefence,t
 // =======================
 //       Bell Towers
 // =======================
@@ -273,6 +281,11 @@
 2-9,27-37,5,darkglass,t
 2,27-37,4,darkglass,t
 9,27-37,4,darkglass,t
+// Floors
+1-11,26,2,limestone,t
+1-10,26,6,limestone,t
+1,26,3-5,limestone,t
+10-11,26,3-5,limestone,t
 // Roof
 1-10,39,2-6,limestone,t
 // Fence
@@ -330,6 +343,11 @@
 22-29,27-37,5,darkglass,t
 22,27-37,4,darkglass,t
 29,27-37,4,darkglass,t
+// Floors
+21-30,26,2,limestone,t
+21-30,26,6,limestone,t
+20-21,26,3-5,limestone,t
+30,26,3-5,limestone,t
 // Roof
 21-30,39,2-6,limestone,t
 // Fence
@@ -337,3 +355,8 @@
 20-31,40,7,limestonefence,t
 20,40,1-6,limestonefence,t
 31,40,1-6,limestonefence,t
+// =========================
+//  Between the bell towers
+// =========================
+12-19,26,1-7,limestone,t
+12-19,27,7,limestonefence,t
