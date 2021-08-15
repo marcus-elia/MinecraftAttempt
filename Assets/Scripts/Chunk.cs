@@ -58,6 +58,8 @@ public class Chunk : MonoBehaviour
     private Texture limestoneHighlightTex;
     private Texture limestonefenceTex;
     private Texture limestonefenceHighlightTex;
+    private Texture darkglassTex;
+    private Texture darkglassHighlightTex;
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
     private HashSet<int> activeBlockLocations = new HashSet<int>();
@@ -193,6 +195,8 @@ public class Chunk : MonoBehaviour
         limestoneHighlightTex = textureDict["limestoneH"];
         limestonefenceTex = textureDict["limestonefence"];
         limestonefenceHighlightTex = textureDict["limestonefenceH"];
+        darkglassTex = textureDict["darkglass"];
+        darkglassHighlightTex = textureDict["darkglassH"];
     }
     public void SetTerrainHeights(float[,] input)
     {
@@ -956,6 +960,10 @@ public class Chunk : MonoBehaviour
         else if(texture == "limestonefence")
         {
             mainTex = limestonefenceTex; highlightTex = limestonefenceHighlightTex;
+        }
+        else if(texture == "darkglass")
+        {
+            mainTex = darkglassTex; highlightTex = darkglassHighlightTex;
         }
         else
         {

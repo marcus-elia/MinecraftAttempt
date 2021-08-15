@@ -74,6 +74,8 @@ public class ChunkManager : MonoBehaviour
     public Texture limestoneHighlightTex;
     public Texture limestonefenceTex;
     public Texture limestonefenceHighlightTex;
+    public Texture darkglassTex;
+    public Texture darkglassHighlightTex;
     private Dictionary<string, Texture> texDict = new Dictionary<string, Texture>();
 
     public GameObject chunkBorderPrefab;
@@ -111,6 +113,8 @@ public class ChunkManager : MonoBehaviour
         texDict["limestoneH"] = limestoneHighlightTex;
         texDict["limestonefence"] = limestonefenceTex;
         texDict["limestonefenceH"] = limestonefenceHighlightTex;
+        texDict["darkglass"] = darkglassTex;
+        texDict["darkglassH"] = darkglassHighlightTex;
 
         // Initiate Perlin noise
         seed = Mathf.FloorToInt(Random.Range(0, int.MaxValue));
