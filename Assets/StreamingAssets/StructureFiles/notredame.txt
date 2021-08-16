@@ -1,4 +1,4 @@
-32,41,30
+32,41,50
 // ====================
 //     Left arch
 // ====================
@@ -360,3 +360,144 @@
 // =========================
 12-19,26,1-7,limestone,t
 12-19,27,7,limestonefence,t
+// ===========================
+//   Roof Middle of Building
+// ===========================
+10,20,8-24,stone,t
+11,21,8-25,stone,t
+12,22,8-26,stone,t
+13,23,8-27,stone,t
+14,24,8-28,stone,t
+15,25,8-29,stone,t
+16,25,8-29,stone,t
+17,24,8-28,stone,t
+18,23,8-27,stone,t
+19,22,8-26,stone,t
+20,21,8-25,stone,t
+21,20,8-24,stone,t
+// ===========================
+//         Roof Wings
+// ===========================
+// Right side
+21-31,20,24,stone,t
+20-31,21,25,stone,t
+19-31,22,26,stone,t
+18-31,23,27,stone,t
+17-31,24,28,stone,t
+16-31,25,29,stone,t
+16-31,25,30,stone,t
+17-31,24,31,stone,t
+18-31,23,32,stone,t
+19-31,22,33,stone,t
+20-31,21,34,stone,t
+21-31,20,35,stone,t
+// Left side
+0-10,20,24,stone,t
+0-11,21,25,stone,t
+0-12,22,26,stone,t
+0-13,23,27,stone,t
+0-14,24,28,stone,t
+0-15,25,29,stone,t
+0-15,25,30,stone,t
+0-14,24,31,stone,t
+0-13,23,32,stone,t
+0-12,22,33,stone,t
+0-11,21,34,stone,t
+0-10,20,35,stone,t
+// =================
+//     Far Roof
+// =================
+10,20,36-44,stone,t
+11,21,35-44,stone,t
+12,22,34-44,stone,t
+13,23,33-44,stone,t
+14,24,32-44,stone,t
+15,25,31-44,stone,t
+16,25,31-44,stone,t
+17,24,32-44,stone,t
+18,23,33-44,stone,t
+19,22,34-44,stone,t
+20,21,35-44,stone,t
+21,20,36-44,stone,t
+// ================
+//    End Cap
+// ================
+// Bottom
+11,20,45-46,stone,t
+12,20,47,stone,t
+13,20,48,stone,t
+14-17,20,49,stone,t
+18,20,48,stone,t
+19,20,47,stone,t
+20,20,45-46,stone,t
+// Layer 1
+12,21,45-46,stone,t
+13,21,47,stone,t
+14,21,48,stone,t
+15-16,21,49,stone,t
+17,21,48,stone,t
+18,21,47,stone,t
+19,21,45-46,stone,t
+// Layer 2
+13,22,45-46,stone,t
+14,22,47,stone,t
+15-16,22,48,stone,t
+17,22,47,stone,t
+18,22,45-46,stone,t
+// Layer 4
+13,23,45,stone,t
+14,23,46,stone,t
+15-16,23,47,stone,t
+17,23,46,stone,t
+18,23,45,stone,t
+// Layer 5
+14,24,45,stone,t
+15-16,24,46,stone,t
+17,24,45,stone,t
+// Layer 6
+15-16,25,45,stone,t
+// ===========================
+//    Middle Roof Perimeter
+// ===========================
+22-24,14,8-23,stone,t
+7-9,14,8-23,stone,t
+22-24,14,31-45,stone,t
+7-9,14,31-45,stone,t
+// End semicircle
+8-10,14,45-46,stone,t
+8-11,14,47,stone,t
+9-12,14,48,stone,t
+10-13,14,49,stone,t
+11-20,14,50,stone,t
+12-19,14,51,stone,t
+13-18,14,52,stone,t
+18-21,14,49,stone,t
+19-22,14,48,stone,t
+20-23,14,47,stone,t
+21-24,14,45-46,stone,t
+// ==========================
+//    Outer Roof Perimeter
+// ==========================
+25-31,8,8-23,stone,t
+0-6,8,8-23,stone,t
+25-31,8,31-45,stone,t
+0-6,8,31-45,stone,t
+// End semicircle
+0-6,8,45-46,stone,t
+0-7,8,47,stone,t
+1-8,8,48,stone,t
+2-9,8,49,stone,t
+3-10,8,50,stone,t
+4-11,8,51,stone,t
+5-12,8,52,stone,t
+7-24,8,53,stone,t
+9-22,8,54,stone,t
+11-20,8,55,stone,t
+14-17,8,56,stone,t
+19-26,8,52,stone,t
+20-27,8,51,stone,t
+21-28,8,50,stone,t
+22-29,8,49,stone,t
+23-30,8,48,stone,t
+24-31,8,47,stone,t
+25-31,8,45-46,stone,t
