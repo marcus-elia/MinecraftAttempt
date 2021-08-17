@@ -1,4 +1,4 @@
-32,41,50
+32,51,56
 // ====================
 //     Left arch
 // ====================
@@ -461,8 +461,8 @@
 // ===========================
 22-24,14,8-23,stone,t
 7-9,14,8-23,stone,t
-22-24,14,31-45,stone,t
-7-9,14,31-45,stone,t
+22-24,14,35-45,stone,t
+7-9,14,35-45,stone,t
 // End semicircle
 8-10,14,45-46,stone,t
 8-11,14,47,stone,t
@@ -480,8 +480,8 @@
 // ==========================
 25-31,8,8-23,stone,t
 0-6,8,8-23,stone,t
-25-31,8,31-45,stone,t
-0-6,8,31-45,stone,t
+25-31,8,35-45,stone,t
+0-6,8,35-45,stone,t
 // End semicircle
 0-6,8,45-46,stone,t
 0-7,8,47,stone,t
@@ -501,3 +501,485 @@
 23-30,8,48,stone,t
 24-31,8,47,stone,t
 25-31,8,45-46,stone,t
+// ===================
+//    Upper Windows
+// ===================
+// ---- Right side ----
+// Window sills
+21,14,8-24,limestone,t
+// Outline
+21,15-19,8,limestone,t
+21,18-19,9,limestone,t
+21,19,10,limestone,t
+21,18-19,11,limestone,t
+21,15-19,12,limestone,t
+// Window
+20,15-19,9-11,darkglass,t
+// Outline
+21,18-19,13,limestone,t
+21,19,14,limestone,t
+21,18-19,15,limestone,t
+21,15-19,16,limestone,t
+// Window
+20,15-19,13-15,darkglass,t
+// Outline
+21,18-19,17,limestone,t
+21,19,18,limestone,t
+21,18-19,19,limestone,t
+21,15-19,20,limestone,t
+// Window
+20,15-19,17-19,darkglass,t
+// Outline
+21,18-19,21,limestone,t
+21,19,22,limestone,t
+21,18-19,23,limestone,t
+21,15-19,24,limestone,t
+// Window
+20,15-19,21-23,darkglass,t
+// Window sills
+21,14,35-42,limestone,t
+// Outline
+21,15-19,35,limestone,t
+21,18-19,36,limestone,t
+21,19,37,limestone,t
+21,18-19,38,limestone,t
+21,15-19,39,limestone,t
+// Window
+20,15-19,36-38,darkglass,t
+// Outline
+21,18-19,40,limestone,t
+21,19,41,limestone,t
+21,18-19,42,limestone,t
+21,15-19,43-44,limestone,t
+// Window
+20,15-19,40-42,darkglass,t
+// ---- Left side ----
+// Window sills
+10,14,8-24,limestone,t
+// Outline
+10,15-19,8,limestone,t
+10,18-19,9,limestone,t
+10,19,10,limestone,t
+10,18-19,11,limestone,t
+10,15-19,12,limestone,t
+// Window
+11,15-19,9-11,darkglass,t
+// Outline
+10,18-19,13,limestone,t
+10,19,14,limestone,t
+10,18-19,15,limestone,t
+10,15-19,16,limestone,t
+// Window
+11,15-19,13-15,darkglass,t
+// Outline
+10,18-19,17,limestone,t
+10,19,18,limestone,t
+10,18-19,19,limestone,t
+10,15-19,20,limestone,t
+// Window
+11,15-19,17-19,darkglass,t
+// Outline
+10,18-19,21,limestone,t
+10,19,22,limestone,t
+10,18-19,23,limestone,t
+10,15-19,24,limestone,t
+// Window
+11,15-19,21-23,darkglass,t
+// Window sills
+10,14,35-42,limestone,t
+// Outline
+10,15-19,35,limestone,t
+10,18-19,36,limestone,t
+10,19,37,limestone,t
+10,18-19,38,limestone,t
+10,15-19,39,limestone,t
+// Window
+11,15-19,36-38,darkglass,t
+// Outline
+10,18-19,40,limestone,t
+10,19,41,limestone,t
+10,18-19,42,limestone,t
+10,15-19,43-44,limestone,t
+// Window
+11,15-19,40-42,darkglass,t
+// ------ End cap --------
+11,15-19,45-46,limestone,t
+12,15-19,47,limestone,t
+13,15-19,48,limestone,t
+18,15-19,48,limestone,t
+19,15-19,47,limestone,t
+20,15-19,45-46,limestone,t
+// Window outline
+14,15-19,49,limestone,t
+17,15-19,49,limestone,t
+15-16,19,49,limestone,t
+15-16,14,49,limestone,t
+// Window
+15-16,15-18,48,darkglass,t
+// ===========================
+//   Middle Layer of Windows
+// ===========================
+// ---- Right side ------
+// Outline
+24,9-13,8,limestone,t
+24,9-10,9,limestone,t
+24,12-13,9,limestone,t
+24,9,10,limestone,t
+24,13,10,limestone,t
+24,9-10,11,limestone,t
+24,12-13,11,limestone,t
+24,9-13,12,limestone,t
+// Window
+23,10-12,9-11,darkglass,t
+// Outline
+24,9-10,13,limestone,t
+24,12-13,13,limestone,t
+24,9,14,limestone,t
+24,13,14,limestone,t
+24,9-10,15,limestone,t
+24,12-13,15,limestone,t
+24,9-13,16,limestone,t
+// Window
+23,10-12,13-15,darkglass,t
+// Outline
+24,9-10,13,limestone,t
+24,12-13,13,limestone,t
+24,9,14,limestone,t
+24,13,14,limestone,t
+24,9-10,15,limestone,t
+24,12-13,15,limestone,t
+24,9-13,16,limestone,t
+// Window
+23,10-12,13-15,darkglass,t
+// Outline
+24,9-10,17,limestone,t
+24,12-13,17,limestone,t
+24,9,18,limestone,t
+24,13,18,limestone,t
+24,9-10,19,limestone,t
+24,12-13,19,limestone,t
+24,9-13,20,limestone,t
+// Window
+23,10-12,17-19,darkglass,t
+// Outline
+24,9-10,21,limestone,t
+24,12-13,21,limestone,t
+24,9,22,limestone,t
+24,13,22,limestone,t
+24,9-10,23,limestone,t
+24,12-13,23,limestone,t
+24,9-13,24,limestone,t
+// Window
+23,10-12,21-23,darkglass,t
+// Outline
+24,9-13,35,limestone,t
+24,9-10,36,limestone,t
+24,12-13,36,limestone,t
+24,9,37,limestone,t
+24,13,37,limestone,t
+24,9-10,38,limestone,t
+24,12-13,38,limestone,t
+24,9-13,39,limestone,t
+// Window
+23,10-12,36-38,darkglass,t
+// Outline
+24,9-10,40,limestone,t
+24,12-13,40,limestone,t
+24,9,41,limestone,t
+24,13,41,limestone,t
+24,9-10,42,limestone,t
+24,12-13,42,limestone,t
+24,9-13,43,limestone,t
+24,9-13,44,limestone,t
+// Window
+23,10-12,40-42,darkglass,t
+// ---- Left side ----
+// Outline
+7,9-13,8,limestone,t
+7,9-10,9,limestone,t
+7,12-13,9,limestone,t
+7,9,10,limestone,t
+7,13,10,limestone,t
+7,9-10,11,limestone,t
+7,12-13,11,limestone,t
+7,9-13,12,limestone,t
+// Window
+8,10-12,9-11,darkglass,t
+// Outline
+7,9-10,13,limestone,t
+7,12-13,13,limestone,t
+7,9,14,limestone,t
+7,13,14,limestone,t
+7,9-10,15,limestone,t
+7,12-13,15,limestone,t
+7,9-13,16,limestone,t
+// Window
+8,10-12,13-15,darkglass,t
+// Outline
+7,9-10,13,limestone,t
+7,12-13,13,limestone,t
+7,9,14,limestone,t
+7,13,14,limestone,t
+7,9-10,15,limestone,t
+7,12-13,15,limestone,t
+7,9-13,16,limestone,t
+// Window
+8,10-12,13-15,darkglass,t
+// Outline
+7,9-10,17,limestone,t
+7,12-13,17,limestone,t
+7,9,18,limestone,t
+7,13,18,limestone,t
+7,9-10,19,limestone,t
+7,12-13,19,limestone,t
+7,9-13,20,limestone,t
+// Window
+8,10-12,17-19,darkglass,t
+// Outline
+7,9-10,21,limestone,t
+7,12-13,21,limestone,t
+7,9,22,limestone,t
+7,13,22,limestone,t
+7,9-10,23,limestone,t
+7,12-13,23,limestone,t
+7,9-13,24,limestone,t
+// Window
+8,10-12,21-23,darkglass,t
+// Outline
+7,9-13,35,limestone,t
+7,9-10,36,limestone,t
+7,12-13,36,limestone,t
+7,9,37,limestone,t
+7,13,37,limestone,t
+7,9-10,38,limestone,t
+7,12-13,38,limestone,t
+7,9-13,39,limestone,t
+// Window
+8,10-12,36-38,darkglass,t
+// Outline
+7,9-10,40,limestone,t
+7,12-13,40,limestone,t
+7,9,41,limestone,t
+7,13,41,limestone,t
+7,9-10,42,limestone,t
+7,12-13,42,limestone,t
+7,9-13,43,limestone,t
+7,9-13,44,limestone,t
+// Window
+8,10-12,40-42,darkglass,t
+// ---- End cap ----
+7,9-13,45-46,limestone,t
+8,9-13,45-47,limestone,t
+9,9-13,48,limestone,t
+10,9-13,49,limestone,t
+11,9-13,50,limestone,t
+12,9-13,51,limestone,t
+13-18,9-13,52,limestone,t
+19,9-13,51,limestone,t
+20,9-13,50,limestone,t
+21,9-13,49,limestone,t
+22,9-13,48,limestone,t
+23,9-13,47,limestone,t
+24,9-13,45-46,limestone,t
+// ==========================
+//  Bottom Layer of Windows
+// ==========================
+// ---- Right side ----
+// Outline
+31,0-7,8,limestone,t
+31,0,9-11,limestone,t
+31,7,9-11,limestone,t
+31,0-7,12,limestone,t
+// Window
+30,1-6,9-11,darkglass,t
+// Outline
+31,0,13-15,limestone,t
+31,7,13-15,limestone,t
+31,0-7,16,limestone,t
+// Window
+30,1-6,13-15,darkglass,t
+// Outline
+31,0,17-19,limestone,t
+31,7,17-19,limestone,t
+31,0-7,20,limestone,t
+// Window
+30,1-6,17-19,darkglass,t
+// Outline
+31,0,21-23,limestone,t
+31,7,21-23,limestone,t
+31,0-7,24,limestone,t
+// Window
+30,1-6,21-23,darkglass,t
+// Outline
+31,0-7,35,limestone,t
+31,0,36-38,limestone,t
+31,7,36-38,limestone,t
+31,0-7,39,limestone,t
+// Window
+30,1-6,36-38,darkglass,t
+// Outline
+31,0,40-42,limestone,t
+31,7,40-42,limestone,t
+31,0-7,43-44,limestone,t
+// Window
+30,1-6,40-42,darkglass,t
+// ---- Left side ----
+// Outline
+0,0-7,8,limestone,t
+0,0,9-11,limestone,t
+0,7,9-11,limestone,t
+0,0-7,12,limestone,t
+// Window
+1,1-6,9-11,darkglass,t
+// Outline
+0,0,13-15,limestone,t
+0,7,13-15,limestone,t
+0,0-7,16,limestone,t
+// Window
+1,1-6,13-15,darkglass,t
+// Outline
+0,0,17-19,limestone,t
+0,7,17-19,limestone,t
+0,0-7,20,limestone,t
+// Window
+1,1-6,17-19,darkglass,t
+// Outline
+0,0,21-23,limestone,t
+0,7,21-23,limestone,t
+0,0-7,24,limestone,t
+// Window
+1,1-6,21-23,darkglass,t
+// Outline
+0,0-7,35,limestone,t
+0,0,36-38,limestone,t
+0,7,36-38,limestone,t
+0,0-7,39,limestone,t
+// Window
+1,1-6,36-38,darkglass,t
+// Outline
+0,0,40-42,limestone,t
+0,7,40-42,limestone,t
+0,0-7,43-44,limestone,t
+// Window
+1,1-6,40-42,darkglass,t
+// ---- End cap ----
+0,0-7,45-47,limestone,t
+1,0-7,48,limestone,t
+2,0-7,49,limestone,t
+3,0-7,50,limestone,t
+4,0-7,51,limestone,t
+5-6,0-7,52,limestone,t
+7-8,0-7,53,limestone,t
+9-10,0-7,54,limestone,t
+11-13,0-7,55,limestone,t
+14-17,0-7,56,limestone,t
+18-20,0-7,55,limestone,t
+21-22,0-7,54,limestone,t
+23-24,0-7,53,limestone,t
+25-26,0-7,52,limestone,t
+26,0-7,51,limestone,t
+27,0-7,50,limestone,t
+28,0-7,49,limestone,t
+29,0-7,48,limestone,t
+30,0-7,45-47,limestone,t
+// ========================
+//     Wing Walls
+// ========================
+// ---- Right side ----
+21-31,0-19,24,limestone,t
+21-31,0-19,35,limestone,t
+// Facade
+31,24,29-30,limestone,t
+31,23,28-31,limestone,t
+31,22,27-32,limestone,t
+31,21,26-33,limestone,t
+31,20,25-34,limestone,t
+31,19,24-35,limestone,t
+// Glass circle
+30,18,29-30,darkglass,t
+30,17,27-32,darkglass,t
+30,16,26-33,darkglass,t
+30,14-15,25-34,darkglass,t
+30,13,26-33,darkglass,t
+30,12,27-32,darkglass,t
+30,11,29-30,darkglass,t
+// Outline of glass circle
+31,18,25-28,limestone,t
+31,18,31-34,limestone,t
+31,17,25-26,limestone,t
+31,17,33-34,limestone,t
+31,16,25,limestone,t
+31,16,34,limestone,t
+31,13,25,limestone,t
+31,13,34,limestone,t
+31,12,25-26,limestone,t
+31,12,33-34,limestone,t
+31,11,25-28,limestone,t
+31,11,31-34,limestone,t
+// Pillars
+31,10,25-34,limestone,t
+31,6-9,26,limestone,t
+31,6-9,28,limestone,t
+31,6-9,31,limestone,t
+31,6-9,33,limestone,t
+31,4-5,25-34,limestone,t
+// Doors
+31,0-3,25,limestone,t
+31,0-3,29-30,limestone,t
+31,0-3,34,limestone,t
+// ---- Left side ----
+0-10,0-19,24,limestone,t
+0-10,0-19,35,limestone,t
+// Facade
+0,24,29-30,limestone,t
+0,23,28-31,limestone,t
+0,22,27-32,limestone,t
+0,21,26-33,limestone,t
+0,20,25-34,limestone,t
+0,19,24-35,limestone,t
+// Glass circle
+1,18,29-30,darkglass,t
+1,17,27-32,darkglass,t
+1,16,26-33,darkglass,t
+1,14-15,25-34,darkglass,t
+1,13,26-33,darkglass,t
+1,12,27-32,darkglass,t
+1,11,29-30,darkglass,t
+// Outline of glass circle
+0,18,25-28,limestone,t
+0,18,31-34,limestone,t
+0,17,25-26,limestone,t
+0,17,33-34,limestone,t
+0,16,25,limestone,t
+0,16,34,limestone,t
+0,13,25,limestone,t
+0,13,34,limestone,t
+0,12,25-26,limestone,t
+0,12,33-34,limestone,t
+0,11,25-28,limestone,t
+0,11,31-34,limestone,t
+// Pillars
+0,10,25-34,limestone,t
+0,6-9,26,limestone,t
+0,6-9,28,limestone,t
+0,6-9,31,limestone,t
+0,6-9,33,limestone,t
+0,4-5,25-34,limestone,t
+// Doors
+0,0-3,25,limestone,t
+0,0-3,29-30,limestone,t
+0,0-3,34,limestone,t
+// Spire
+15-16,25-35,28,stone,t
+17,24-35,29,stone,t
+18,25-35,30-31,stone,t
+17,24-35,32,stone,t
+15-16,25-35,33,stone,t
+14,24-35,32,stone,t
+13,25-35,30-31,stone,t
+14,24-35,29,stone,t
+15-16,36-42,29,stone,t
+17,36-42,30-31,stone,t
+15-16,36-42,32,stone,t
+14,36-42,30-31,stone,t
+15-16,43-50,30-31,stone,t
