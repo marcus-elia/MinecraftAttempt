@@ -281,6 +281,11 @@ MonoBehaviour:
   octaves: 2
   persistence: 8
   lacunarity: 1.2
+  isInteractable: 1
+  makeWorldBorder: 1
+  userCanChooseGeneration: 1
+  generateCathedral: 0
+  generateHouses: 0
 --- !u!1 &654550254
 GameObject:
   m_ObjectHideFlags: 0

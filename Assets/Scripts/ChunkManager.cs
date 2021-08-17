@@ -99,6 +99,13 @@ public class ChunkManager : MonoBehaviour
     public float persistence = 1f;
     public float lacunarity = 1f;
 
+    // Properties that are different for the start menu chunk manager
+    public bool isInteractable;
+    public bool makeWorldBorder;
+    public bool userCanChooseGeneration;
+    public bool generateCathedral;
+    public bool generateHouses;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -126,8 +133,37 @@ public class ChunkManager : MonoBehaviour
         chunkLoadingJobs = new Dictionary<int, bool>();
         // Create the square of chunks first. Do the work up front to avoid lag.
         GenerateSquareOfChunks(numberOfChunks);
-        // Test generating structures
-        this.GenerateStructureFromFile("notredame.txt");
+        
+        if(userCanChooseGeneration)
+        {
+            switch(StartMenuHandler.buildingMode)
+            {
+                case BuildingGenerationMode.All:
+                    generateCathedral = true;
+                    generateHouses = true;
+                    break;
+                case BuildingGenerationMode.Small:
+                    generateCathedral = false;
+                    generateHouses = true;
+                    break;
+                default:
+                    generateCathedral = false;
+                    generateHouses = false;
+                    break;
+            }
+        }
+        // Generate structures
+        if(generateCathedral)
+        {
+            this.GenerateStructureFromFile("notredame.txt");
+        }
+        if(generateHouses)
+        {
+            for(int _ = 0; _ < 7; _++)
+            {
+                this.GenerateStructureFromFile("house.txt");
+            }
+        }
 
         // Set the radius of visible chunks
         //updateChunks();    
@@ -146,9 +182,12 @@ public class ChunkManager : MonoBehaviour
             //updateChunks();
         }
         //DoChunkLoadingJobs(1);
-        Raycast();
-        ReactToClick();
-        ReactToRightClick();
+        if(isInteractable)
+        {
+            Raycast();
+            ReactToClick();
+            ReactToRightClick();
+        }
     }
 
     // If the player enters a new chunk, return true and update the chunk id
@@ -268,19 +307,19 @@ public class ChunkManager : MonoBehaviour
             {
                 int id = ChunkManager.chunkCoordsToChunkID(i, j);
                 GameObject c = CreateChunk(id);
-                if(i == -squareSize)
+                if(i == -squareSize && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderWest(worldBorderPrefab);
                 }
-                else if(i == squareSize)
+                else if(i == squareSize && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderEast(worldBorderPrefab);
                 }
-                if (j == -squareSize)
+                if (j == -squareSize && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderSouth(worldBorderPrefab);
                 }
-                else if (j == squareSize)
+                else if (j == squareSize && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderNorth(worldBorderPrefab);
                 }
