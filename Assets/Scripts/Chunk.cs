@@ -48,7 +48,7 @@ public class Chunk : MonoBehaviour
     private Direction blockHighlightSide;
 
     // Textures
-    private Texture grassTex;
+   /* private Texture grassTex;
     private Texture grassHighlightTex;
     private Texture stoneTex;
     private Texture stoneHighlightTex;
@@ -59,7 +59,7 @@ public class Chunk : MonoBehaviour
     private Texture limestonefenceTex;
     private Texture limestonefenceHighlightTex;
     private Texture darkglassTex;
-    private Texture darkglassHighlightTex;
+    private Texture darkglassHighlightTex;*/
 
     private GameObject[,,] blocks = new GameObject[worldHeight + 1, blocksPerSide, blocksPerSide];
     private HashSet<int> activeBlockLocations = new HashSet<int>();
@@ -183,7 +183,7 @@ public class Chunk : MonoBehaviour
         bottomLeft = new Vector3(chunkCoords.x * blocksPerSide, 0, chunkCoords.z * blocksPerSide);
     }
     
-    public void SetTextures(Dictionary<string, Texture> textureDict)
+    /*public void SetTextures(Dictionary<string, Texture> textureDict)
     {
         grassTex = textureDict["grass"];
         grassHighlightTex = textureDict["grassH"];
@@ -197,7 +197,7 @@ public class Chunk : MonoBehaviour
         limestonefenceHighlightTex = textureDict["limestonefenceH"];
         darkglassTex = textureDict["darkglass"];
         darkglassHighlightTex = textureDict["darkglassH"];
-    }
+    }*/
     public void SetTerrainHeights(float[,] input)
     {
         terrainHeights = input;
@@ -215,7 +215,8 @@ public class Chunk : MonoBehaviour
                 block.transform.SetParent(transform);
                 block.transform.localPosition = new Vector3(x + 0.5f, 0.5f, z + 0.5f);
                 block.GetComponent<Block>().CreateFaces();
-                block.GetComponent<Block>().SetTextures(stoneTex, stoneHighlightTex);
+                block.GetComponent<Block>().SetTextures(ChunkManager.texDict[BlockType.Stone]);
+                block.GetComponent<Block>().SetBlockType(BlockType.Grass);
                 block.GetComponent<Block>().ApplyMainTexture();
                 block.GetComponent<Block>().SetCanBeBroken(false);
                 block.GetComponent<Block>().SetChunkID(chunkID);
@@ -240,7 +241,8 @@ public class Chunk : MonoBehaviour
                     block.transform.SetParent(transform);
                     block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
                     block.GetComponent<Block>().CreateFaces();
-                    block.GetComponent<Block>().SetTextures(grassTex, grassHighlightTex);
+                    block.GetComponent<Block>().SetTextures(ChunkManager.texDict[BlockType.Grass]);
+                    block.GetComponent<Block>().SetBlockType(BlockType.Grass);
                     block.GetComponent<Block>().ApplyMainTexture();
                     block.GetComponent<Block>().SetCanBeBroken(true);
                     block.GetComponent<Block>().SetChunkID(chunkID);
@@ -464,6 +466,7 @@ public class Chunk : MonoBehaviour
         northWorldBorder.transform.SetParent(transform);
         northWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
         northWorldBorder.transform.localPosition = new Vector3(blocksPerSide / 2, worldHeight / 2, blocksPerSide);
+        northWorldBorder.GetComponent<Renderer>().enabled = false;
     }
     public void AddWorldBorderSouth(GameObject prefab)
     {
@@ -472,6 +475,7 @@ public class Chunk : MonoBehaviour
         southWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
         southWorldBorder.transform.localPosition = new Vector3(blocksPerSide / 2, worldHeight / 2, 0);
         southWorldBorder.transform.Rotate(Vector3.up, 180f);
+        southWorldBorder.GetComponent<Renderer>().enabled = false;
     }
     public void AddWorldBorderEast(GameObject prefab)
     {
@@ -480,6 +484,7 @@ public class Chunk : MonoBehaviour
         eastWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
         eastWorldBorder.transform.localPosition = new Vector3(blocksPerSide, worldHeight / 2, blocksPerSide / 2);
         eastWorldBorder.transform.Rotate(Vector3.up, 90f);
+        eastWorldBorder.GetComponent<Renderer>().enabled = false;
     }
     public void AddWorldBorderWest(GameObject prefab)
     {
@@ -488,6 +493,7 @@ public class Chunk : MonoBehaviour
         westWorldBorder.transform.localScale = new Vector3(blocksPerSide, worldHeight, 1);
         westWorldBorder.transform.localPosition = new Vector3(0, worldHeight / 2, blocksPerSide / 2);
         westWorldBorder.transform.Rotate(Vector3.up, 270f);
+        westWorldBorder.GetComponent<Renderer>().enabled = false;
     }
 
 
@@ -670,6 +676,7 @@ public class Chunk : MonoBehaviour
     {
         if (highlightedBlock && highlightedBlock.GetComponent<Block>().CanBeBroken())
         {
+            Inventory.BreakBlock(highlightedBlock.GetComponent<Block>().GetBlockType());
             highlightedBlock.GetComponent<Block>().RemoveSelf();
             blocks[highlightedIndex.y, highlightedIndex.x, highlightedIndex.z] = null;
             Destroy(highlightedBlock.GetComponent<Collider>());
@@ -681,7 +688,7 @@ public class Chunk : MonoBehaviour
 
     public void ReactToRightClick()
     {
-        if (highlightedBlock != null && this.CanPlace())
+        if (highlightedBlock != null && this.CanPlace() && Inventory.PlaceBlock())
         {
             int x = highlightedIndex.x;
             int y = highlightedIndex.y;
@@ -766,7 +773,8 @@ public class Chunk : MonoBehaviour
         block.transform.SetParent(transform);
         block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
         block.GetComponent<Block>().CreateFaces();
-        block.GetComponent<Block>().SetTextures(grassTex, grassHighlightTex);
+        block.GetComponent<Block>().SetTextures(ChunkManager.texDict[Inventory.selectedBlockType]);
+        block.GetComponent<Block>().SetBlockType(Inventory.selectedBlockType);
         block.GetComponent<Block>().SetChunkID(chunkID);
         block.GetComponent<Block>().SetCanBeBroken(true);
         block.GetComponent<Block>().SetIndexInChunk(x, y, z);
@@ -939,36 +947,36 @@ public class Chunk : MonoBehaviour
             return false;
         }
 
-        Texture mainTex, highlightTex;
         // Get the texture
+        BlockType blockType;
         if(texture == "stone")
         {
-            mainTex = stoneTex; highlightTex = stoneHighlightTex;
+            blockType = BlockType.Stone;
         }
         else if(texture == "grass")
         {
-            mainTex = grassTex; highlightTex = grassHighlightTex;
+            blockType = BlockType.Grass;
         }
         else if(texture == "wood")
         {
-            mainTex = woodTex; highlightTex = woodHighlightTex;
+            blockType = BlockType.Wood;
         }
         else if(texture == "limestone")
         {
-            mainTex = limestoneTex; highlightTex = limestoneHighlightTex;
+            blockType = BlockType.Limestone;
         }
         else if(texture == "limestonefence")
         {
-            mainTex = limestonefenceTex; highlightTex = limestonefenceHighlightTex;
+            blockType = BlockType.Limestonefence;
         }
         else if(texture == "darkglass")
         {
-            mainTex = darkglassTex; highlightTex = darkglassHighlightTex;
+            blockType = BlockType.Darkglass;
         }
         else
         {
             Debug.Log("Invalid texture " + texture + ". Defaulting to grass.");
-            mainTex = grassTex; highlightTex = grassHighlightTex;
+            blockType = BlockType.Grass;
         }
 
         // Create the new block
@@ -977,7 +985,8 @@ public class Chunk : MonoBehaviour
         block.transform.SetParent(transform);
         block.transform.localPosition = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
         block.GetComponent<Block>().CreateFaces();
-        block.GetComponent<Block>().SetTextures(mainTex, highlightTex);
+        block.GetComponent<Block>().SetTextures(ChunkManager.texDict[blockType]);
+        block.GetComponent<Block>().SetBlockType(blockType);
         block.GetComponent<Block>().ApplyMainTexture();
         block.GetComponent<Block>().SetCanBeBroken(isBreakable);
         block.GetComponent<Block>().SetChunkID(chunkID);

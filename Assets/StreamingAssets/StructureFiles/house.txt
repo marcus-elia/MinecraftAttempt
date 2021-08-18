@@ -1,35 +1,49 @@
-5,5,5
-// Stone base perimeter with door hole
-0,0,0,stone,t
-1,0,0,stone,t
-3,0,0,stone,t
-4,0,0-4,stone,t
-0-3,0,4,stone,t
-0,0,1-3,stone,t
-// Door frame
-1,1,0,stone,t
-1,2,0,stone,t
-2,2,0,stone,t
-3,2,0,stone,t
-3,1,0,stone,t
-// Wooden Walls
-// Front
-0,1-4,0,wood,t
-4,1-4,0,wood,t
-1,3-4,0,wood,t
-2,3-4,0,wood,t
-3,3-4,0,wood,t
-// Left
-0,1-4,1,wood,t
-0,2-4,2,wood,t
-0,1-4,3,wood,t
-0,1-4,4,wood,t
-// Right
-4,1-4,1,wood,t
-4,2-4,2,wood,t
-4,1-4,3,wood,t
-4,1-4,4,wood,t
-// Back
-1-3,1-4,4,wood,t
+9,9,5
+// Front wall
+0-8,0-1,0,wood,t
+0,2-5,0,wood,t
+1,1-2,0,darkglass,t
+1,3-5,0,wood,t
+2,2-5,0,wood,t
+3,1-2,0,darkglass,t
+3,3-5,0,wood,t
+4,2-5,0,wood,t
+5,1-2,0,darkglass,t
+5,3-5,0,wood,t
+6,2-5,0,wood,t
+7,1-2,0,darkglass,t
+7,3-5,0,wood,t
+8,2-5,0,wood,t
+// Right wall
+8,0-5,1,wood,t
+8,3-5,2,wood,t
+8,0-5,3,wood,t
+// Back wall
+0-8,0-1,4,wood,t
+0,2-5,4,wood,t
+1,1-2,4,darkglass,t
+1,3-5,4,wood,t
+2,2-5,4,wood,t
+3,1-2,4,darkglass,t
+3,3-5,4,wood,t
+4,2-5,4,wood,t
+5,1-2,4,darkglass,t
+5,3-5,4,wood,t
+6,2-5,4,wood,t
+7,1-2,4,darkglass,t
+7,3-5,4,wood,t
+8,2-5,4,wood,t
+// Left wall
+0,0-5,1-3,wood,t
 // Roof
-0-4,5,0-4,stone,t
+0-8,5,-1,stone,t
+0-8,6,0,stone,t
+0-8,7,1,stone,t
+0-8,8,2,stone,t
+0-8,7,3,stone,t
+0-8,6,4,stone,t
+0-8,5,5,stone,t
+0,6,1-3,wood,t
+0,7,2,wood,t
+8,6,1-3,wood,t
+8,7,2,wood,t

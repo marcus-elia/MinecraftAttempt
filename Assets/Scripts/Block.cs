@@ -26,10 +26,12 @@ public class Block : MonoBehaviour
 
     public static int blockSize = 1;
 
+    // Properties of this block
     private Texture tex;
     private Texture highlightTex;
 
     private bool canBeBroken;
+    private BlockType blockType;
 
     // Start is called before the first frame update
     void Start()
@@ -76,10 +78,10 @@ public class Block : MonoBehaviour
         westFace.layer = LayerMask.NameToLayer("Block Faces");
     }
 
-    public void SetTextures(Texture tex, Texture highlightTex)
+    public void SetTextures(TexturePair texs)
     {
-        this.tex = tex;
-        this.highlightTex = highlightTex;
+        this.tex = texs.tex;
+        this.highlightTex = texs.highlight;
     }
     public void ApplyTexture(Texture tex)
     {
@@ -222,6 +224,10 @@ public class Block : MonoBehaviour
     {
         canBeBroken = input;
     }
+    public void SetBlockType(BlockType input)
+    {
+        blockType = input;
+    }
 
     // Count how many faces are exposed
     public int GetNumExposedFaces()
@@ -290,6 +296,10 @@ public class Block : MonoBehaviour
     public bool CanBeBroken()
     {
         return canBeBroken;
+    }
+    public BlockType GetBlockType()
+    {
+        return blockType;
     }
 
     public void RemoveSelf()

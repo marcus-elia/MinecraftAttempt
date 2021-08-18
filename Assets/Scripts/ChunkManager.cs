@@ -29,6 +29,18 @@ public struct Point3D
     }
 }
 
+public struct TexturePair
+{
+    public Texture tex;
+    public Texture highlight;
+
+    public TexturePair(Texture input, Texture inputH)
+    {
+        tex = input;
+        highlight = inputH;
+    }
+}
+
 public struct StructureFootprint
 {
     public int x, z, xWidth, zWidth;
@@ -76,7 +88,7 @@ public class ChunkManager : MonoBehaviour
     public Texture limestonefenceHighlightTex;
     public Texture darkglassTex;
     public Texture darkglassHighlightTex;
-    private Dictionary<string, Texture> texDict = new Dictionary<string, Texture>();
+    public static Dictionary<BlockType, TexturePair> texDict = new Dictionary<BlockType, TexturePair>();
 
     public GameObject chunkBorderPrefab;
     public GameObject worldBorderPrefab;
@@ -110,18 +122,12 @@ public class ChunkManager : MonoBehaviour
     void Start()
     {
         // Make the dictionary of textures
-        texDict["grass"] = grassTex;
-        texDict["grassH"] = grassHighlightTex;
-        texDict["stone"] = stoneTex;
-        texDict["stoneH"] = stoneHighlightTex;
-        texDict["wood"] = woodTex;
-        texDict["woodH"] = woodHighlightTex;
-        texDict["limestone"] = limestoneTex;
-        texDict["limestoneH"] = limestoneHighlightTex;
-        texDict["limestonefence"] = limestonefenceTex;
-        texDict["limestonefenceH"] = limestonefenceHighlightTex;
-        texDict["darkglass"] = darkglassTex;
-        texDict["darkglassH"] = darkglassHighlightTex;
+        texDict[BlockType.Grass] = new TexturePair(grassTex, grassHighlightTex);
+        texDict[BlockType.Stone] = new TexturePair(stoneTex, stoneHighlightTex);
+        texDict[BlockType.Wood] = new TexturePair(woodTex, woodHighlightTex);
+        texDict[BlockType.Limestone] = new TexturePair(limestoneTex, limestoneHighlightTex);
+        texDict[BlockType.Darkglass] = new TexturePair(darkglassTex, darkglassHighlightTex);
+        texDict[BlockType.Limestonefence] = new TexturePair(limestonefenceTex, limestonefenceHighlightTex);
 
         // Initiate Perlin noise
         seed = Mathf.FloorToInt(Random.Range(0, int.MaxValue));
@@ -176,6 +182,10 @@ public class ChunkManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(PauseMenu.IsPaused)
+        {
+            return;
+        }
         // Update chunks if the player moved
         if (updateCurrentPlayerChunkID())
         {
@@ -261,7 +271,7 @@ public class ChunkManager : MonoBehaviour
         c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
                                                     scale, octaves, persistence, lacunarity, offset,
                                                     Noise.NormalizeMode.Global));
-        c.GetComponent<Chunk>().SetTextures(texDict);
+        //c.GetComponent<Chunk>().SetTextures(texDict);
         c.GetComponent<Chunk>().InitializeBlocks();
         //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 
