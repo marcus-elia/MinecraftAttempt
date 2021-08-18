@@ -12,6 +12,8 @@ public class MoveSun : MonoBehaviour
 
     private float theta_ = 0;
 
+    private static float timeOffset = 0;
+
     // Audio depends on day night cycle
     public GameObject audioManager;
 
@@ -25,7 +27,7 @@ public class MoveSun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float newTheta = Mathf.Deg2Rad * Inventory.Mod((int)(Time.time * 360f / dayNightLength), 360);
+        float newTheta = Mathf.Deg2Rad * Inventory.Mod((int)((Time.time - timeOffset) * 360f / dayNightLength), 360);
 
         // Check if it is morning
         if(theta_ < 5*Mathf.PI/4 && newTheta >= 5*Mathf.PI/4)
@@ -45,5 +47,10 @@ public class MoveSun : MonoBehaviour
         transform.position = new Vector3(0, y, z);
         transform.LookAt(Vector3.zero);
         skyboxShader.SetFloat("_Blend", (-Mathf.Cos(theta_) + 1) / 0.5f);
+    }
+
+    public static void UpdateTimeOffset()
+    {
+        timeOffset = Time.time;
     }
 }

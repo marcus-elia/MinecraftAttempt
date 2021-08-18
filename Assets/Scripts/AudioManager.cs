@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
+    public bool IS_MUTED; // The intro scene never plays music
+
     public AudioSource audioSource;
     public AudioClip bellsMajor;
     public AudioClip bellsMinor;
@@ -29,7 +31,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMajor()
     {
-        if(play)
+        if(play && !IS_MUTED)
         {
             audioSource.clip = bellsMajor;
             audioSource.Play();
@@ -39,7 +41,7 @@ public class AudioManager : MonoBehaviour
     }
     public void PlayMinor()
     {
-        if(play)
+        if(play && !IS_MUTED)
         {
             audioSource.clip = bellsMinor;
             audioSource.Play();

@@ -24,7 +24,8 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int blocksPerSideSquared = blocksPerSide * blocksPerSide;
-    public static int terrainHeight = 4;
+    public static int terrainHeight = 7;
+    private float terrainHeightScale = 1f;
     public static int worldHeight = 60;
     //public static int groundLevel = 1;
     private int perlinValue;
@@ -198,9 +199,10 @@ public class Chunk : MonoBehaviour
         darkglassTex = textureDict["darkglass"];
         darkglassHighlightTex = textureDict["darkglassH"];
     }*/
-    public void SetTerrainHeights(float[,] input)
+    public void SetTerrainHeights(float[,] input, float terrainHeightScale=1f)
     {
         terrainHeights = input;
+        this.terrainHeightScale = terrainHeightScale;
     }
 
     public void InitializeBlocks()
@@ -233,7 +235,8 @@ public class Chunk : MonoBehaviour
             {
                 // Get the terrain height at this spot in the chunk
                 // No idea why 15 - z is necessary instead of just z, but that's what makes it work
-                int groundLevel = Mathf.Min(terrainHeight, Mathf.FloorToInt(1.5f* terrainHeight * this.terrainHeights[x, 15 - z]) + 1);
+                float maxHeight = Chunk.terrainHeight * terrainHeightScale;
+                int groundLevel = Mathf.Min(Mathf.FloorToInt(maxHeight), Mathf.FloorToInt(1.5f* maxHeight * this.terrainHeights[x, 15 - z]) + 1);
                 for (int y = 1; y <= groundLevel; y++)
                 {
                     GameObject block = new GameObject();
@@ -1014,5 +1017,19 @@ public class Chunk : MonoBehaviour
         index -= x;
         index /= blocksPerSide;
         y = index;
+    }
+
+    // When this scene ends
+    public void DestroyAll()
+    {
+        foreach(int index in activeBlockLocations)
+        {
+            IndexToBlockCoords(index, out int x, out int y, out int z);
+            blocks[y, x, z].GetComponent<Block>().RemoveSelf();
+        }
+        Destroy(this.northChunkBorder);
+        Destroy(this.southChunkBorder);
+        Destroy(this.eastChunkBorder);
+        Destroy(this.westChunkBorder);
     }
 }

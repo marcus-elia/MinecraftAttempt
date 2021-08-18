@@ -117,6 +117,7 @@ public class ChunkManager : MonoBehaviour
     public bool userCanChooseGeneration;
     public bool generateCathedral;
     public bool generateHouses;
+    public bool dramaticTerrain;
 
     // Start is called before the first frame update
     void Start()
@@ -137,35 +138,45 @@ public class ChunkManager : MonoBehaviour
         allSeenChunks = new Dictionary<int, GameObject>();
         currentChunkIDs = new SortedSet<int>();
         chunkLoadingJobs = new Dictionary<int, bool>();
-        // Create the square of chunks first. Do the work up front to avoid lag.
-        GenerateSquareOfChunks(numberOfChunks);
-        
+                
         if(userCanChooseGeneration)
         {
             switch(StartMenuHandler.buildingMode)
             {
                 case BuildingGenerationMode.All:
                     generateCathedral = true;
-                    generateHouses = true;
+                    generateHouses = false;
+                    dramaticTerrain = false;
                     break;
                 case BuildingGenerationMode.Small:
                     generateCathedral = false;
                     generateHouses = true;
+                    dramaticTerrain = false;
+                    break;
+                case BuildingGenerationMode.None:
+                    generateCathedral = false;
+                    generateHouses = false;
+                    dramaticTerrain = false;
                     break;
                 default:
                     generateCathedral = false;
                     generateHouses = false;
+                    dramaticTerrain = true;
                     break;
             }
         }
+
+        // Create the square of chunks first. Do the work up front to avoid lag.
+        GenerateSquareOfChunks(numberOfChunks);
+
         // Generate structures
-        if(generateCathedral)
+        if (generateCathedral)
         {
             this.GenerateStructureFromFile("notredame.txt");
         }
         if(generateHouses)
         {
-            for(int _ = 0; _ < 7; _++)
+            for(int _ = 0; _ < 15; _++)
             {
                 this.GenerateStructureFromFile("house.txt");
             }
@@ -268,9 +279,18 @@ public class ChunkManager : MonoBehaviour
         c.AddComponent<Chunk>();
         c.GetComponent<Chunk>().SetChunkID(id);
         Vector2 offset = c.GetComponent<Chunk>().GetTerrainOffset();
-        c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
-                                                    scale, octaves, persistence, lacunarity, offset,
-                                                    Noise.NormalizeMode.Global));
+        if(dramaticTerrain)
+        {
+            c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
+                                                    20, 7, 3, 1.2f, offset,
+                                                    Noise.NormalizeMode.Global), 2.5f);
+        }
+        else
+        {
+            c.GetComponent<Chunk>().SetTerrainHeights(Noise.GenerateNoiseMap(mapWidth, mapHeight, seed,
+                                                        scale, octaves, persistence, lacunarity, offset,
+                                                        Noise.NormalizeMode.Global));
+        }
         //c.GetComponent<Chunk>().SetTextures(texDict);
         c.GetComponent<Chunk>().InitializeBlocks();
         //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
@@ -786,6 +806,14 @@ public class ChunkManager : MonoBehaviour
     {
         return !(x > footprint.x + footprint.xWidth || x + xWidth < footprint.x ||
             z > footprint.z + footprint.zWidth || z + zWidth < footprint.z);
+    }
+
+    public void DestroyAll()
+    {
+        foreach(int chunkID in allSeenChunks.Keys)
+        {
+            allSeenChunks[chunkID].GetComponent<Chunk>().DestroyAll();
+        }
     }
 }
 

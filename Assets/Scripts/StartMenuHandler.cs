@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public enum BuildingGenerationMode { All, Small, None };
+public enum BuildingGenerationMode { All, Small, None, Terrain };
 
 public class StartMenuHandler : MonoBehaviour
 {
@@ -40,8 +40,11 @@ public class StartMenuHandler : MonoBehaviour
             case 2:
                 buildingMode = BuildingGenerationMode.Small;
                 break;
-            default:
+            case 1:
                 buildingMode = BuildingGenerationMode.None;
+                break;
+            default:
+                buildingMode = BuildingGenerationMode.Terrain;
                 break;
         }
     }
