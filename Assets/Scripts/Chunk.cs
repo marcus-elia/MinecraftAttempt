@@ -460,6 +460,21 @@ public class Chunk : MonoBehaviour
         westChunkBorder.transform.localScale = new Vector3(blocksPerSide, blocksPerSide, 1);
         westChunkBorder.transform.localPosition = new Vector3(0, blocksPerSide / 2, blocksPerSide/2);
         westChunkBorder.transform.Rotate(Vector3.up, 270f);
+        DeactivateChunkBorders();
+    }
+    public void ActivateChunkBorders()
+    {
+        northChunkBorder.SetActive(true);
+        southChunkBorder.SetActive(true);
+        eastChunkBorder.SetActive(true);
+        westChunkBorder.SetActive(true);
+    }
+    public void DeactivateChunkBorders()
+    {
+        northChunkBorder.SetActive(false);
+        southChunkBorder.SetActive(false);
+        eastChunkBorder.SetActive(false);
+        westChunkBorder.SetActive(false);
     }
 
     // Helper function for creating world borders

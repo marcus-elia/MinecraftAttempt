@@ -92,6 +92,7 @@ public class ChunkManager : MonoBehaviour
 
     public GameObject chunkBorderPrefab;
     public GameObject worldBorderPrefab;
+    private bool chunkBordersShown = false;
 
     // Keep track of where the player is to decide which Chunks
     // to be active
@@ -291,9 +292,8 @@ public class ChunkManager : MonoBehaviour
                                                         scale, octaves, persistence, lacunarity, offset,
                                                         Noise.NormalizeMode.Global));
         }
-        //c.GetComponent<Chunk>().SetTextures(texDict);
         c.GetComponent<Chunk>().InitializeBlocks();
-        //c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
+        c.GetComponent<Chunk>().CreateChunkBorders(chunkBorderPrefab);
 
         // Set the neighbors, if they exist
         // (and the set reverse neighbor direction)
@@ -806,6 +806,26 @@ public class ChunkManager : MonoBehaviour
     {
         return !(x > footprint.x + footprint.xWidth || x + xWidth < footprint.x ||
             z > footprint.z + footprint.zWidth || z + zWidth < footprint.z);
+    }
+
+    // When the user hits the chunk border button
+    public void ToggleChunkBorders()
+    {
+        if(chunkBordersShown)
+        {
+            foreach (int chunkID in allSeenChunks.Keys)
+            {
+                allSeenChunks[chunkID].GetComponent<Chunk>().DeactivateChunkBorders();
+            }
+        }
+        else
+        {
+            foreach (int chunkID in allSeenChunks.Keys)
+            {
+                allSeenChunks[chunkID].GetComponent<Chunk>().ActivateChunkBorders();
+            }
+        }
+        chunkBordersShown = !chunkBordersShown;
     }
 
     public void DestroyAll()
