@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,9 +18,14 @@ public class Inventory : MonoBehaviour
 
     public static Dictionary<BlockType, TexturePair> texDict = new Dictionary<BlockType, TexturePair>();
     public static Dictionary<BlockType, GameObject> imageDict = new Dictionary<BlockType, GameObject>();
+    public static Dictionary<BlockType, TextMeshProUGUI> countTextDict = new Dictionary<BlockType, TextMeshProUGUI>();
+
 
     // What the player is selecting
     public static BlockType selectedBlockType = BlockType.Grass;
+
+    // The text counting each block type
+    public TextMeshProUGUI grassCountText, stoneCountText, woodCountText, limestoneCountText, darkglassCountText, limestonefenceCountText;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +45,14 @@ public class Inventory : MonoBehaviour
         imageDict[BlockType.Limestone] = limestoneIcon;
         imageDict[BlockType.Darkglass] = darkglassIcon;
         imageDict[BlockType.Limestonefence] = limestonefenceIcon;
+
+        // And map to the UI text
+        countTextDict[BlockType.Grass] = grassCountText;
+        countTextDict[BlockType.Stone] = stoneCountText;
+        countTextDict[BlockType.Wood] = woodCountText;
+        countTextDict[BlockType.Limestone] = limestoneCountText;
+        countTextDict[BlockType.Darkglass] = darkglassCountText;
+        countTextDict[BlockType.Limestonefence] = limestonefenceCountText;
 
         // Set the textures of the icons in the UI and initialize the counts (how many
         // of each block the player has) to 0.
@@ -72,6 +86,7 @@ public class Inventory : MonoBehaviour
         else
         {
             numBlocks[selectedBlockType] -= 1;
+            countTextDict[selectedBlockType].text = numBlocks[selectedBlockType].ToString();
             return true;
         }
     }
@@ -79,6 +94,7 @@ public class Inventory : MonoBehaviour
     public static void BreakBlock(BlockType blockType)
     {
         numBlocks[blockType] += 1;
+        countTextDict[blockType].text = numBlocks[blockType].ToString();
     }
 
     public static int Mod(int a, int m)

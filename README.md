@@ -13,6 +13,7 @@ Here are my goals.
 - [x] Right click to place blocks
 - [x] Add unbreakable block layer at the bottom
 - [x] Simple terrain
+- [x] Inventory managing block placement
 - [ ] Add basic hostile mobs
 - [ ] Spawning algorithm for mobs
 - [ ] Left click to attack mobs
@@ -20,7 +21,7 @@ Here are my goals.
 - [ ] Regeneration over time
 - [ ] Holding shift to sneak
 - [ ] Light sources
-- [ ] Day/night cycle
+- [x] Day/night cycle
 - [ ] Background music
 - [ ] Craftable doors
-- [ ] Generated structures
+- [x] Generated structures
