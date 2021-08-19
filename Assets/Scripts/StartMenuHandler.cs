@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public class StartMenuHandler : MonoBehaviour
     public Dropdown dropdown;
     public GameObject mainMenuPanel;
     public GameObject instructionsPanel;
+    public TextMeshProUGUI resultText;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +29,7 @@ public class StartMenuHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        resultText.text = WinLoseStatus.resultString;
     }
 
     public void DropdownValueChanged(Dropdown change)

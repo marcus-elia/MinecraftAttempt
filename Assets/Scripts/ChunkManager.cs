@@ -102,7 +102,7 @@ public class ChunkManager : MonoBehaviour
     public float playerHeight;
 
     // Need the camera for raycasting
-    public Camera camera;
+    public new Camera camera;
     public float raycastDistance = 7f;
 
     // Explosions
@@ -129,6 +129,8 @@ public class ChunkManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerTransform.position = Vector3.zero;
+
         // Make the dictionary of textures
         texDict[BlockType.Grass] = new TexturePair(grassTex, grassHighlightTex);
         texDict[BlockType.Stone] = new TexturePair(stoneTex, stoneHighlightTex);
@@ -177,26 +179,29 @@ public class ChunkManager : MonoBehaviour
         GenerateSquareOfChunks(numberOfChunks);
 
         // Generate structures
-        if (generateCathedral)
+        if(generateCathedral)
         {
             this.GenerateStructureFromFile("notredame.txt");
             this.numNotreDameBlocks = CountUniqueBlocksInFile("notredame.txt");
-            Debug.Log(numNotreDameBlocks);
+            WinLoseStatus.numBlocks = this.numNotreDameBlocks;
         }
-        if(generateHouses)
-        {
-            for(int _ = 0; _ < 15; _++)
-            {
-                this.GenerateStructureFromFile("house.txt");
-            }
-        }
+        //if(generateHouses)
+        //{
+         //   for(int _ = 0; _ < 15; _++)
+         //   {
+            //    this.GenerateStructureFromFile("house.txt");
+          //  }
+        //}
 
         // Set the radius of visible chunks
         //updateChunks();    
 
         // Put the player on the ground
         float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
+        Debug.Log(groundLevel);
+        Debug.Log(playerTransform.position);
         playerTransform.position = playerTransform.position + Vector3.up * (groundLevel + playerHeight / 2f);
+        Debug.Log(playerTransform.position);
     }
 
     // Update is called once per frame
@@ -206,6 +211,12 @@ public class ChunkManager : MonoBehaviour
         {
             return;
         }
+        if(playerTransform.position.y < 1)
+        {
+            float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
+            playerTransform.position = Vector3.zero + Vector3.up * (groundLevel + playerHeight / 2f);
+        }
+        Debug.Log(playerTransform.position);
         // Update chunks if the player moved
         if (updateCurrentPlayerChunkID())
         {
@@ -906,7 +917,6 @@ public class ChunkManager : MonoBehaviour
                 {
                     for (z = zmin; z <= zmax; z++)
                     {
-                        names[x, y, z] = texture;
                         blockLocations[x, y, z] = true;
                     }
                 }
@@ -915,12 +925,6 @@ public class ChunkManager : MonoBehaviour
 
         // Now count them all
         int count = 0;
-        int numGrass = 0;
-        int numStone = 0;
-        int numWood = 0;
-        int numLimestone = 0;
-        int numDarkglass = 0;
-        int numLimestonefence = 0;
         for(int i = 0; i < xSize; i++)
         {
             for(int j = 0; j < ySize; j++)
