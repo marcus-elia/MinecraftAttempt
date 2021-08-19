@@ -799,11 +799,20 @@ public class Chunk : MonoBehaviour
         block.GetComponent<Block>().ApplyMainTexture();
         blocks[y, x, z] = block;
         activeBlockLocations.Add(BlockCoordsToIndex(x, y, z));
+
+        if(Inventory.selectedBlockType == BlockType.Grass)
+        {
+            Explosion(x, y, z, 0);
+        }
     }
 
     // This assumes the x y z block has been created, but doesn't have neighbors set
     public void SetBlockNeighborConnections(int x, int y, int z)
     {
+        if(blocks[y, x, z] == null) // In case of explosion
+        {
+            return;
+        }
         GameObject neighbor;
         // West
         if(x == 0)
@@ -1046,5 +1055,123 @@ public class Chunk : MonoBehaviour
         Destroy(this.southChunkBorder);
         Destroy(this.eastChunkBorder);
         Destroy(this.westChunkBorder);
+    }
+
+    public void Explosion(int x, int y, int z, int distanceFromSource)
+    {
+        // When the explosion is too far away, stop
+        if(distanceFromSource == ChunkManager.blastRadius)
+        {
+            return;
+        }
+        if(distanceFromSource == 0)
+        {
+            PlayerMovement.explosionJustHappened = true;
+            PlayerMovement.timeOfLastExplosion = Time.time;
+        }
+
+        GameObject block = blocks[y, x, z];
+        if (block != null)
+        {
+            Inventory.BreakBlock(block.GetComponent<Block>().GetBlockType());
+            block.GetComponent<Block>().RemoveSelf();
+            blocks[y, x, z] = null;
+            Destroy(block.GetComponent<Collider>());
+            Destroy(block);
+            activeBlockLocations.Remove(BlockCoordsToIndex(x, y, z));
+        }
+
+        // Try exploding neighbors
+        // North
+        if(Random.Range(0f, 1f) < ChunkManager.explosionProb)
+        {
+            if(z == blocksPerSide - 1)
+            {
+                if(this.northNeighbor != null)
+                {
+                    northNeighbor.Explosion(x, y, 0, distanceFromSource + 1);
+                }
+            }
+            else
+            {
+                Explosion(x, y, z + 1, distanceFromSource + 1);
+            }
+        }
+        // South
+        if(Random.Range(0f, 1f) < ChunkManager.explosionProb)
+        {
+            if (z == 0)
+            {
+                if (this.southNeighbor != null)
+                {
+                    southNeighbor.Explosion(x, y, blocksPerSide-1, distanceFromSource + 1);
+                }
+            }
+            else
+            {
+                Explosion(x, y, z - 1, distanceFromSource + 1);
+            }
+        }
+        // East
+        if (Random.Range(0f, 1f) < ChunkManager.explosionProb)
+        {
+            if (x == blocksPerSide - 1)
+            {
+                if (this.eastNeighbor != null)
+                {
+                    eastNeighbor.Explosion(0, y, z, distanceFromSource + 1);
+                }
+            }
+            else
+            {
+                Explosion(x + 1, y, z, distanceFromSource + 1);
+            }
+        }
+        // West
+        if (Random.Range(0f, 1f) < ChunkManager.explosionProb)
+        {
+            if (x == 0)
+            {
+                if (this.westNeighbor != null)
+                {
+                    westNeighbor.Explosion(blocksPerSide - 1, y, z, distanceFromSource + 1);
+                }
+            }
+            else
+            {
+                Explosion(x - 1, y, z, distanceFromSource + 1);
+            }
+        }
+        // Up
+        if (Random.Range(0f, 1f) < ChunkManager.explosionProb)
+        {
+            if (y != worldHeight)
+            {
+                Explosion(x, y + 1, z, distanceFromSource + 1);
+            }
+        }
+        // Down
+        if (Random.Range(0f, 1f) < ChunkManager.explosionProb)
+        {
+            if (y != 1)  // Don't break the bottom layer of stone
+            {
+                Explosion(x, y - 1, z, distanceFromSource + 1);
+            }
+        }
+
+        // Pick random other blocks
+        /*if (Random.Range(0f, 1f) < neighborProb)
+        {
+            if (x != 0 && x != blocksPerSide - 1 && z != 0 && z != blocksPerSide - 1 && y > 1 && y < worldHeight)
+            {
+                for(int _ = 0; _ < 6; _++)
+                {
+                    int deltaX = Random.Range(-1, 2);
+                    int deltaY = Random.Range(-1, 2);
+                    int deltaZ = Random.Range(-1, 2);
+                    Explosion(x + deltaX, y + deltaY, z + deltaZ, distanceFromSource - 1);
+                }
+            }
+        }*/
     }
 }

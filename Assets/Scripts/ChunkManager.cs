@@ -94,6 +94,8 @@ public class ChunkManager : MonoBehaviour
     public GameObject worldBorderPrefab;
     private bool chunkBordersShown = false;
 
+    private int numNotreDameBlocks = 0;
+
     // Keep track of where the player is to decide which Chunks
     // to be active
     public Transform playerTransform;
@@ -102,6 +104,10 @@ public class ChunkManager : MonoBehaviour
     // Need the camera for raycasting
     public Camera camera;
     public float raycastDistance = 7f;
+
+    // Explosions
+    public static int blastRadius = 10;
+    public static float explosionProb = 1f;
 
     // Perlin noise parameters for terrain height
     public int mapWidth = Chunk.blocksPerSide;
@@ -174,6 +180,8 @@ public class ChunkManager : MonoBehaviour
         if (generateCathedral)
         {
             this.GenerateStructureFromFile("notredame.txt");
+            this.numNotreDameBlocks = CountUniqueBlocksInFile("notredame.txt");
+            Debug.Log(numNotreDameBlocks);
         }
         if(generateHouses)
         {
@@ -625,6 +633,7 @@ public class ChunkManager : MonoBehaviour
     // ====================================================
     public bool InsertBlockAtWorldCoords(int x, int y, int z, string texture, bool isBreakable)
     {
+
         int chunkID = this.getChunkIDContainingPoint(new Vector3(x, y, z), Chunk.blocksPerSide);
         // If the chunk is outside the world border, stop
         if(!allSeenChunks.ContainsKey(chunkID))
@@ -723,6 +732,7 @@ public class ChunkManager : MonoBehaviour
 
     public void GenerateStructureFromFile(string filename)
     {
+
         // This is based on a tutorial by PrefixWiz https://www.youtube.com/watch?v=1OOWHB-BOAY
         string filepath = Application.streamingAssetsPath + "/StructureFiles/" + filename;
         string[] fileLines = File.ReadAllLines(filepath);
@@ -794,6 +804,139 @@ public class ChunkManager : MonoBehaviour
         }  
     }
 
+    public int CountUniqueBlocksInFile(string filename)
+    {
+        // This is based on a tutorial by PrefixWiz https://www.youtube.com/watch?v=1OOWHB-BOAY
+        string filepath = Application.streamingAssetsPath + "/StructureFiles/" + filename;
+        string[] fileLines = File.ReadAllLines(filepath);
+
+        // The first line should be the "x,y,z" dimensions of the structure
+        string[] firstLineArgs = fileLines[0].Split(',');
+        if (firstLineArgs.Length != 3)
+        {
+            Debug.LogError("Structure dimension string must have 2 commas, but received " + fileLines[0]);
+            return -1;
+        }
+        int xSize, ySize, zSize;
+        bool success = true;
+        success = int.TryParse(firstLineArgs[0], out xSize) && success;
+        success = int.TryParse(firstLineArgs[1], out ySize) && success;
+        success = int.TryParse(firstLineArgs[2], out zSize) && success;
+        if (!success)
+        {
+            Debug.LogError("Could not parse ints " + firstLineArgs[0] + " " + firstLineArgs[1] + " " + firstLineArgs[2]);
+            return -1;
+        }
+
+        bool[,,] blockLocations = new bool[xSize, ySize, zSize];
+
+        for (int j = 1; j < fileLines.Length; j++)
+        {
+            string blockInstruction = fileLines[j];
+            // Ignore comments
+            if (blockInstruction.StartsWith("//"))
+            {
+                continue;
+            }
+            // If not a comment, split on commas. Expect 5 pieces.
+            string[] args = blockInstruction.Split(',');
+            if (args.Length != 5)
+            {
+                Debug.LogError("Block instruction string must have 4 commas. Received " + blockInstruction);
+                return -1;
+            }
+            int x, y, z, xmin, xmax, ymin, ymax, zmin, zmax;
+            success = true;
+            success = int.TryParse(args[0], out x);
+            if (success)
+            {
+                xmin = x; xmax = x;
+            }
+            else
+            {
+                string[] xargs = args[0].Split('-');
+                if (xargs.Length != 2)
+                {
+                    Debug.LogError("Invalid range specified: " + args[0]);
+                }
+                xmin = int.Parse(xargs[0]);
+                xmax = int.Parse(xargs[1]);
+            }
+            success = int.TryParse(args[1], out y);
+            if (success)
+            {
+                ymin = y; ymax = y;
+            }
+            else
+            {
+                string[] yargs = args[1].Split('-');
+                if (yargs.Length != 2)
+                {
+                    Debug.LogError("Invalid range specified: " + args[1]);
+                }
+                ymin = int.Parse(yargs[0]);
+                ymax = int.Parse(yargs[1]);
+            }
+            success = int.TryParse(args[2], out z);
+            if (success)
+            {
+                zmin = z; zmax = z;
+            }
+            else
+            {
+                string[] zargs = args[2].Split('-');
+                if (zargs.Length != 2)
+                {
+                    Debug.LogError("Invalid range specified: " + args[2]);
+                }
+                zmin = int.Parse(zargs[0]);
+                zmax = int.Parse(zargs[1]);
+            }
+            if (xmin > xmax || ymin > ymax || zmin > zmax)
+            {
+                Debug.LogError("Specified range has min > max");
+                return -1;
+            }
+
+            string texture = args[3];
+            bool isBreakable = (args[4] == "T" || args[4] == "t" || args[4] == "true" || args[4] == "true");
+            for (x = xmin; x <= xmax; x++)
+            {
+                for (y = ymin; y <= ymax; y++)
+                {
+                    for (z = zmin; z <= zmax; z++)
+                    {
+                        names[x, y, z] = texture;
+                        blockLocations[x, y, z] = true;
+                    }
+                }
+            }
+        }
+
+        // Now count them all
+        int count = 0;
+        int numGrass = 0;
+        int numStone = 0;
+        int numWood = 0;
+        int numLimestone = 0;
+        int numDarkglass = 0;
+        int numLimestonefence = 0;
+        for(int i = 0; i < xSize; i++)
+        {
+            for(int j = 0; j < ySize; j++)
+            {
+                for(int k = 0; k < zSize; k++)
+                {
+                    if(blockLocations[i, j, k] == true)
+                    {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
     public int GetGroundLevelAtWorldCoords(int x, int z)
     {
         Vector3 location = new Vector3(x, 1, z);
@@ -826,6 +969,11 @@ public class ChunkManager : MonoBehaviour
             }
         }
         chunkBordersShown = !chunkBordersShown;
+    }
+
+    public void ExplodePlayer(Vector3 location)
+    {
+        
     }
 
     public void DestroyAll()

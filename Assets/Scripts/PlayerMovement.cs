@@ -19,11 +19,18 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGrounded;
 
+    public static bool explosionJustHappened = false;
+    public static float timeOfLastExplosion = 0;
+
     Vector3 velocity;
 
     // Update is called once per frame
     void Update()
     {
+        if(Time.time - timeOfLastExplosion > 1f)
+        {
+            explosionJustHappened = false;
+        }
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)
@@ -42,7 +49,13 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime);
 
-        if (isGrounded && Input.GetButtonDown("Jump"))
+        if(PlayerMovement.explosionJustHappened && Input.GetButtonDown("Jump"))
+        {
+            PlayerMovement.explosionJustHappened = false;
+            velocity.y = Mathf.Sqrt(15*jumpHeight * -2f * gravity);
+        }
+
+        else if (isGrounded && Input.GetButtonDown("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
