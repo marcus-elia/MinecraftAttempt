@@ -183,8 +183,8 @@ public class ChunkManager : MonoBehaviour
         // Generate structures
         if(generateCathedral)
         {
-            this.GenerateStructureFromFile("notredame.txt");
-            this.numNotreDameBlocks = CountUniqueBlocksInFile("notredame.txt");
+            this.GenerateStructureFromHardCodedFile();
+            this.numNotreDameBlocks = CountUniqueBlocksFromHardCodedFile();
             WinLoseStatus.numBlocks = this.numNotreDameBlocks;
         }
         //if(generateHouses)
@@ -741,7 +741,7 @@ public class ChunkManager : MonoBehaviour
         }
 
         string texture = args[3];
-        bool isBreakable = (args[4] == "T" || args[4] == "t" || args[4] == "true" || args[4] == "true");
+        bool isBreakable = (args[4].StartsWith("T") || args[4].StartsWith("t") || args[4].StartsWith("true") || args[4].StartsWith("true"));
         for(x = xmin; x <= xmax; x++)
         {
             for(y = ymin; y <= ymax; y++)
@@ -755,13 +755,25 @@ public class ChunkManager : MonoBehaviour
         return true;
     }
 
+    // This exists because WebGL can't read from a text file, so the whole text file is
+    // a static string
+    public void GenerateStructureFromHardCodedFile()
+    {
+        string fileContents = HardCodedBuilding.buildingFile;
+        string[] fileLines = fileContents.Split('\n');
+        this.GenerateStructureFromFileLines(fileLines);
+    }
+
     public void GenerateStructureFromFile(string filename)
     {
-
         // This is based on a tutorial by PrefixWiz https://www.youtube.com/watch?v=1OOWHB-BOAY
         string filepath = Application.streamingAssetsPath + "/StructureFiles/" + filename;
         string[] fileLines = File.ReadAllLines(filepath);
+        this.GenerateStructureFromFileLines(fileLines);
+    }
 
+    public void GenerateStructureFromFileLines(string[] fileLines)
+    {
         // The first line should be the "x,y,z" dimensions of the structure
         string[] args = fileLines[0].Split(',');
         if (args.Length != 3)
@@ -829,12 +841,22 @@ public class ChunkManager : MonoBehaviour
         }  
     }
 
-    public int CountUniqueBlocksInFile(string filename)
+    public int CountUniqueBlocksFromHardCodedFile()
+    {
+        string fileContents = HardCodedBuilding.buildingFile;
+        string[] fileLines = fileContents.Split('\n');
+        return this.CountUniqueBlocksInFileLines(fileLines);
+    }
+
+    public int CountUniqueBlocksFromFile(string filename)
     {
         // This is based on a tutorial by PrefixWiz https://www.youtube.com/watch?v=1OOWHB-BOAY
         string filepath = Application.streamingAssetsPath + "/StructureFiles/" + filename;
         string[] fileLines = File.ReadAllLines(filepath);
-
+        return this.CountUniqueBlocksInFileLines(fileLines);
+    }
+    public int CountUniqueBlocksInFileLines(string[] fileLines)
+    {
         // The first line should be the "x,y,z" dimensions of the structure
         string[] firstLineArgs = fileLines[0].Split(',');
         if (firstLineArgs.Length != 3)
