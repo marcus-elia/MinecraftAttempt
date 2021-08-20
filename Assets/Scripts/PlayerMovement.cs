@@ -60,7 +60,14 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        controller.Move(velocity * Time.deltaTime);
+        if(transform.position.y < -10)
+        {
+            velocity.y = 0;
+        }
+        else
+        {
+            controller.Move(velocity * Time.deltaTime);
+        }
     }
 }
 

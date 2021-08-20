@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public struct Point2D
 {
@@ -100,6 +101,7 @@ public class ChunkManager : MonoBehaviour
     // to be active
     public Transform playerTransform;
     public float playerHeight;
+    public CharacterController controller; // Need to move the player if out of bounds
 
     // Need the camera for raycasting
     public new Camera camera;
@@ -198,10 +200,7 @@ public class ChunkManager : MonoBehaviour
 
         // Put the player on the ground
         float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
-        Debug.Log(groundLevel);
-        Debug.Log(playerTransform.position);
-        playerTransform.position = playerTransform.position + Vector3.up * (groundLevel + playerHeight / 2f);
-        Debug.Log(playerTransform.position);
+        playerTransform.position = playerTransform.position + Vector3.up * (2 + groundLevel + playerHeight / 2f);
     }
 
     // Update is called once per frame
@@ -211,12 +210,7 @@ public class ChunkManager : MonoBehaviour
         {
             return;
         }
-        if(playerTransform.position.y < 1)
-        {
-            float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
-            playerTransform.position = Vector3.zero + Vector3.up * (groundLevel + playerHeight / 2f);
-        }
-        Debug.Log(playerTransform.position);
+
         // Update chunks if the player moved
         if (updateCurrentPlayerChunkID())
         {
@@ -228,6 +222,26 @@ public class ChunkManager : MonoBehaviour
             Raycast();
             ReactToClick();
             ReactToRightClick();
+        }
+
+        // End the game if the player is out of the world
+        if(playerTransform.position.y < -10)
+        {
+            if(allSeenChunks.ContainsKey(currentPlayerChunkID))
+            {
+                float groundLevel = allSeenChunks[currentPlayerChunkID].GetComponent<Chunk>().GetGroundLevel(playerTransform.position);
+                controller.Move(new Vector3(1000, 0, 0));
+                controller.Move(new Vector3(0, 100 - playerTransform.position.y, 0));
+                controller.Move(new Vector3(-1000, 0, 0));
+                controller.Move(new Vector3(0, -90, 0));
+            }
+            else
+            {
+                WinLoseStatus.resultString = "You escaped the world. Good job, Kevin.";
+                SceneManager.LoadScene("StartMenu");
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         }
     }
 

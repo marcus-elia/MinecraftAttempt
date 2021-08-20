@@ -817,7 +817,14 @@ public class Chunk : MonoBehaviour
         // West
         if(x == 0)
         {
-            neighbor = this.westNeighbor.GetBlocks()[y, blocksPerSide - 1, z];
+            if(this.westNeighbor != null)
+            {
+                neighbor = this.westNeighbor.GetBlocks()[y, blocksPerSide - 1, z];
+            }
+            else
+            {
+                neighbor = null;
+            }
         }
         else
         {
@@ -831,7 +838,14 @@ public class Chunk : MonoBehaviour
         // East
         if(x == blocksPerSide - 1)
         {
-            neighbor = this.eastNeighbor.GetBlocks()[y, 0, z];
+            if (this.eastNeighbor != null)
+            {
+                neighbor = this.eastNeighbor.GetBlocks()[y, 0, z];
+            }
+            else
+            {
+                neighbor = null;
+            }
         }
         else
         {
@@ -845,7 +859,14 @@ public class Chunk : MonoBehaviour
         // North
         if (z ==  blocksPerSide - 1)
         {
-            neighbor = this.northNeighbor.GetBlocks()[y, x, 0];
+            if (this.northNeighbor != null)
+            {
+                neighbor = this.northNeighbor.GetBlocks()[y, x, 0];
+            }
+            else
+            {
+                neighbor = null;
+            }
         }
         else
         {
@@ -859,7 +880,14 @@ public class Chunk : MonoBehaviour
         // South
         if (z == 0)
         {
-            neighbor = this.southNeighbor.GetBlocks()[y, x, blocksPerSide - 1];
+            if (this.southNeighbor != null)
+            {
+                neighbor = this.southNeighbor.GetBlocks()[y, x, blocksPerSide - 1];
+            }
+            else
+            {
+                neighbor = null;
+            }
         }
         else
         {

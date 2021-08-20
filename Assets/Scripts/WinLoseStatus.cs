@@ -36,7 +36,7 @@ public class WinLoseStatus : MonoBehaviour
         else
         {
             WinLoseStatus.correctAnswer = false;
-            WinLoseStatus.resultString = "You lost. You can try again if you want.";
+            WinLoseStatus.resultString = "You lost. There were not " + guessText.text + " blocks.";
         }
         chunkManager.GetComponent<ChunkManager>().DestroyAll();
         SceneManager.LoadScene("StartMenu");
