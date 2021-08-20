@@ -24,7 +24,7 @@ public class Chunk : MonoBehaviour
     private Point2D chunkCoords; // corresponds to south west corner
     public static int blocksPerSide = 16;
     public static int blocksPerSideSquared = blocksPerSide * blocksPerSide;
-    public static int terrainHeight = 7;
+    public static int terrainHeight = 3;
     private float terrainHeightScale = 1f;
     public static int worldHeight = 60;
     //public static int groundLevel = 1;

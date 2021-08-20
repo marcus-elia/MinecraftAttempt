@@ -74,7 +74,10 @@ public class ChunkManager : MonoBehaviour
 
     // Determines the total world size (this number is half of the sidelength of the world)
     private static int numberOfChunks = 3;
-    private static int worldBorderLength = numberOfChunks * Chunk.blocksPerSide;
+    private static int minXChunk = -1;
+    private static int maxXChunk = 1;
+    private static int minZChunk = -1;
+    private static int maxZChunk = 2;
 
     // Textures
     public Texture grassTex;
@@ -178,7 +181,7 @@ public class ChunkManager : MonoBehaviour
         }
 
         // Create the square of chunks first. Do the work up front to avoid lag.
-        GenerateSquareOfChunks(numberOfChunks);
+        GenerateSquareOfChunks();
 
         // Generate structures
         if(generateCathedral)
@@ -362,27 +365,31 @@ public class ChunkManager : MonoBehaviour
         //Debug.Log("new chunk " + id + " has exposed faces: " + allSeenChunks[id].GetComponent<Chunk>().CountExposedFaces());
     }
 
-    public void GenerateSquareOfChunks(int squareSize)
+    public void GenerateSquareOfChunks()
     {
-        for(int i = -squareSize; i <= squareSize; i++)
+        int left = minXChunk;
+        int right = maxXChunk;
+        int bottom = minZChunk;
+        int top = maxZChunk;
+        for(int i = left; i <= right; i++)
         {
-            for (int j = -squareSize; j <= squareSize; j++)
+            for (int j = bottom; j <= top; j++)
             {
                 int id = ChunkManager.chunkCoordsToChunkID(i, j);
                 GameObject c = CreateChunk(id);
-                if(i == -squareSize && this.makeWorldBorder)
+                if(i == left && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderWest(worldBorderPrefab);
                 }
-                else if(i == squareSize && this.makeWorldBorder)
+                else if(i == right && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderEast(worldBorderPrefab);
                 }
-                if (j == -squareSize && this.makeWorldBorder)
+                if (j == bottom && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderSouth(worldBorderPrefab);
                 }
-                else if (j == squareSize && this.makeWorldBorder)
+                else if (j == top && this.makeWorldBorder)
                 {
                     c.GetComponent<Chunk>().AddWorldBorderNorth(worldBorderPrefab);
                 }
@@ -796,8 +803,10 @@ public class ChunkManager : MonoBehaviour
         for(int i = 0; i < STRUCTURE_TRIES; i++)
         {
             // Get a random location to try building the structure
-            int x = Random.Range(-worldBorderLength + xSize, worldBorderLength - xSize);
-            int z = Random.Range(-worldBorderLength + zSize, worldBorderLength - zSize);
+            //int x = Random.Range(minXChunk*Chunk.blocksPerSide, maxXChunk*Chunk.blocksPerSide - xSize);
+            //int z = Random.Range(minZChunk*Chunk.blocksPerSide, maxZChunk*Chunk.blocksPerSide - zSize);
+            int x = -8;
+            int z = -12;
             int groundLevel = GetGroundLevelAtWorldCoords(x, z);
 
             // If the ground is too high, no
